@@ -1,5 +1,5 @@
 University of Queensland (UQ)
-Object Oreinted Programming
+Object Oriented Programming
 Group Project of Year 1 Semester 2
 
 Project Name: Web based hotel and restaurant management system
