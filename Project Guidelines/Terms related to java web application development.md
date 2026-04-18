@@ -1,4 +1,24 @@
+Project plan
 
+
+
+19/04
+
+
+
+create the front end and the back end piece by piece
+
+make a rough design of the each page which manages the required functions of the system
+
+1. Select a function to implement
+
+2\. Make the spring boot with relevant classes
+
+3\. after create the react frontend for it
+
+### 
+
+### 
 
 ### **Here are the primary tools and terms categorized by where they live in a modern web application.**
 
@@ -177,6 +197,7 @@ setter injection (recommended) - need to use autowired
 @Primary - your preferred class to be executed, coded in the preferred class
 
 
+
 @Qualifier("class name with simple letters / bean name") - written in the class(not bean name class, lets say whole class) where you want it (bean name class) to be connected to
 
 
@@ -191,17 +212,17 @@ when we create a spring project in IntelliJ ultimate it creates a spring boot pr
 
 we can also use gradle instead of maven if you prefer
 
-#11 (12th video in the playlist)
+\#11 (12th video in the playlist)
 didn't watch this video properly
 
-#12
+\#12
 Servlets
 Tomcat
 client sends requests and server sends responses, this is achieved by HTTP protocol. Therefore our application should be in a server (you cant just run it on the JVM). In java we use servlets. Servlets run in the web container. we need to use tomcat to run servlets. When using Spring, behind the scenes spring is using servelts and it will run on tomcat.
 
 Controller is a special class - accepts requests from clients and also respond
 
-#13  printing on the web page for the first time
+\#13  printing on the web page for the first time
 @Controller - sends data with the layout (like earlier days). to learn more about what controller means watch the video.
 @RestController - to send only data, not with the layout. typed near the class.
 @ResponseBody - to send only data, not with the layout. typed near the method.
@@ -215,7 +236,7 @@ we can have multiple contollers. we dont have to put every request in one contro
 
 Spring creates for you and gives another controller which we cant see called the front controller. the request goes to this controller before going to any other controller.
 
-#14
+\#14
 Lombok
 pom.xml to handle dependencies
 when you want to add a new dependency to pom.xml and dont remember the groupid and artifcatid and all that you can go the website called mvnrepository.
@@ -240,7 +261,7 @@ There are a lot of things in this video, and i am too lazy to write everything h
 
 talked about a little bit of API at the end.
 
-#15
+\#15
 Rest API uses HTTP which has certain methods.
 to fetch (#22 0:12 he meant sending data to the website, also i explained this in #16) GET
 to store on the server POST
@@ -270,7 +291,7 @@ creating a JSON file in postman
 
 @RequestBody
 
-#16
+\#16
 GET - client(browser/ API client like postman) getting
 POST - client sending, backend getting
 
@@ -278,11 +299,12 @@ POST - client sending, backend getting
 @DeleteMapping
 
 
-#17
+
+\#17
 Repository layer is responsible to connect the database
 in earlier days we have to use DBMC - Java Database Connectivity. Using this we can connect java code with the database, to do this we have to do 7 step (load driver, connect to DB, Create Query, execute query, process). all this lengthy code is done in the repository layer.
 
-SPring framework has SPring JDBC, if we use this instaed of normal JDBC it will be easy. 
+SPring framework has SPring JDBC, if we use this instaed of normal JDBC it will be easy.
 
 This can be done in a more easy way with the use of ORM (Object Relational Mapping)
 
@@ -293,7 +315,7 @@ BEcause of this storing data in the DB becomes very very easy.
 
 Databases that we can use - H2, PostgreSQL, MySQL. For this we are using H2.
 
-#18
+\#18
 connector (h2 driver) - connect databse with our spring application
 also create a reposiroty layer
 
@@ -305,7 +327,7 @@ also specify the driver class name in application.properties
 
 H2 setup
 
-#19
+\#19
 Because of hibernate, when we need class of we need to create a table in the databse we need to add @Entity to that class (while keeping @Component which is already there)
 @Id for the primary key variable
 
@@ -314,7 +336,7 @@ to see the query that is implemented in the background we can use - spring.jpa.s
 to change the username and password of the H2 database use, spring.datasource.username = seran
 spring.datasource.password = 123heheh
 
-#20
+\#20
 
 frontend is already made with react
 
@@ -325,7 +347,7 @@ in javascript world everything happens with the help of functions
 
 frontend website shows issues because backend is not there
 
-#21
+\#21
 not in H2 but in permanent databases like progresql and MySQL we dont want to create an already existing table, so we use spring.jpa.hibernate.ddl-auto = update
 
 using Lombok
@@ -339,7 +361,7 @@ i dont know why he didn't add @Component
 
 and also @Id to make private int id the primary key
 
-#22
+\#22
 @RequestMapping on the controller
 
 @AUtowired on top of the object variable (field injection) which is not recommended. recommended to use constructor or a setter injection
@@ -351,16 +373,66 @@ in h2 to keep the data even after the program is stopped we can create a file in
 after spring boot 2.7 H2 tries to insert values to the table before creating the table, so to avoid that in the application.properties, spring.jpa.defer-datasource-initialization = true
 (data initialization happens after creating the table)
 
-#23
+\#23
 CORS error - Cross origin Resource sharing
 
 to avoid this, we can solve this issue from both the client side and the server side
 from the server side, we can type @CrossOrigin on top of the productcontroller class. then when you refresh the frontend which has the port number 5173 (spring boot has 8080) it will display the frontend which was made using react.
 
-#24
+\#24
 7:00 @JsonFormat on top of private Date releaseDate to show the date in a user friendly format
 
 9:00 to see how to send the status (eg- 200 OK, 400 file not found)
 
-#25
+\#25
 watch from here
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+
+### **Full Stack Spring Boot and React CRUD 1.5 hours Course | Full Stack Web App | MySQL | Hibernate**
+
+
+
+
+
+18:50 install Node and npm
+
+
+
+43:00 react router dom
+
+
+
+
+
+
+
