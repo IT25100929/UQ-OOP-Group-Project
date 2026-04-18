@@ -239,3 +239,128 @@ There are a lot of things in this video, and i am too lazy to write everything h
 @autowired - to create an object of another class inside another class. This was used in a previous video too.
 
 talked about a little bit of API at the end.
+
+#15
+Rest API uses HTTP which has certain methods.
+to fetch (#22 0:12 he meant sending data to the website, also i explained this in #16) GET
+to store on the server POST
+to update PUT
+to delete DELETE
+
+there are other methods as well but these are the four that we normally use.
+
+CRUD,
+create - post
+read- get
+update - put
+delete - delete
+
+when we pass a url in the browser we send the get request.
+
+Postman
+
+7.56 - about stream()
+
+By default method is GET
+
+instead of @RequestMapping we can use @GetMapping for GET
+@PostMapping
+
+creating a JSON file in postman
+
+@RequestBody
+
+#16
+GET - client(browser/ API client like postman) getting
+POST - client sending, backend getting
+
+@PutMapping
+@DeleteMapping
+
+
+#17
+Repository layer is responsible to connect the database
+in earlier days we have to use DBMC - Java Database Connectivity. Using this we can connect java code with the database, to do this we have to do 7 step (load driver, connect to DB, Create Query, execute query, process). all this lengthy code is done in the repository layer.
+
+SPring framework has SPring JDBC, if we use this instaed of normal JDBC it will be easy. 
+
+This can be done in a more easy way with the use of ORM (Object Relational Mapping)
+
+ORM is done by a ORM tool (Hibernate(Most famous), EclipseLink, MyBatis)
+
+because these ORM tools have a standard (JPA - Java persistence API) it is very easy to move between different ORM tools. so we use Spring data JPA.
+BEcause of this storing data in the DB becomes very very easy.
+
+Databases that we can use - H2, PostgreSQL, MySQL. For this we are using H2.
+
+#18
+connector (h2 driver) - connect databse with our spring application
+also create a reposiroty layer
+
+when adding a new dependency to the created project you can also go to the sprin initializer and create a project by adding those dependencies, without donwloadg the project
+just go to the explore and copy the relevant dependecny from the pom.xml file and paste it in the current project pom.xml
+
+when you connect with database you have to specify the url in application.properties
+also specify the driver class name in application.properties
+
+H2 setup
+
+#19
+Because of hibernate, when we need class of we need to create a table in the databse we need to add @Entity to that class (while keeping @Component which is already there)
+@Id for the primary key variable
+
+to see the query that is implemented in the background we can use - spring.jpa.show-sql = true
+
+to change the username and password of the H2 database use, spring.datasource.username = seran
+spring.datasource.password = 123heheh
+
+#20
+
+frontend is already made with react
+
+react with vite in the frontend coded in vs code
+
+componenets in react have their layout and their own functionality
+in javascript world everything happens with the help of functions
+
+frontend website shows issues because backend is not there
+
+#21
+not in H2 but in permanent databases like progresql and MySQL we dont want to create an already existing table, so we use spring.jpa.hibernate.ddl-auto = update
+
+using Lombok
+to the product class
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
+also to get the table @Entity
+i dont know why he didn't add @Component
+
+and also @Id to make private int id the primary key
+
+#22
+@RequestMapping on the controller
+
+@AUtowired on top of the object variable (field injection) which is not recommended. recommended to use constructor or a setter injection
+
+@GeneratedValue on top of private int id to auto generate values in that field
+
+in h2 to keep the data even after the program is stopped we can create a file in reasources called data.sql and paste the query of "insert into" to that file.
+
+after spring boot 2.7 H2 tries to insert values to the table before creating the table, so to avoid that in the application.properties, spring.jpa.defer-datasource-initialization = true
+(data initialization happens after creating the table)
+
+#23
+CORS error - Cross origin Resource sharing
+
+to avoid this, we can solve this issue from both the client side and the server side
+from the server side, we can type @CrossOrigin on top of the productcontroller class. then when you refresh the frontend which has the port number 5173 (spring boot has 8080) it will display the frontend which was made using react.
+
+#24
+7:00 @JsonFormat on top of private Date releaseDate to show the date in a user friendly format
+
+9:00 to see how to send the status (eg- 200 OK, 400 file not found)
+
+#25
+watch from here
