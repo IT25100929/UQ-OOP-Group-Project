@@ -114,3 +114,27 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+
+/* index.css */
+.navbar-brand {
+  letter-spacing: 2px;
+}
+
+.nav-link {
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #198754 !important;
+  /* Matches btn-success color */
+  transform: translateY(-2px);
+  /* Subtle lift effect */
+}
+
+/* Glassmorphism effect (Optional) */
+.navbar {
+  background: rgba(33, 37, 41, 0.95) !important;
+  backdrop-filter: blur(8px);
+}

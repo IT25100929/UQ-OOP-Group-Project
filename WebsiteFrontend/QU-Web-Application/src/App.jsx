@@ -12,15 +12,16 @@ function App() {
     <Router>
       <Header />
 
-      <div className="container mt-4">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/rooms" element={<Rooms />} />
-        </Routes>
-      </div>
+      <Routes>
+        {/* Home stays full-width (No container) */}
+        <Route path="/" element={<Home />} />
+
+        {/* These pages get wrapped in a container */}
+        <Route path="/signin" element={<div className="container mt-5"><SignIn /></div>} />
+        <Route path="/signup" element={<div className="container mt-5"><SignUp /></div>} />
+        <Route path="/rooms" element={<div className="container mt-5"><Rooms /></div>} />
+      </Routes>
+
     </Router>
 
 

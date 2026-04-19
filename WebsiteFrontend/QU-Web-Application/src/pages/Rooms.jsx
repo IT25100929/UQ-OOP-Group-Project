@@ -1,56 +1,60 @@
+import React, { useEffect } from 'react';
 import hotelImage1 from "../assets/pexels-burakeroglu3-31089991.jpg";
-// Import other images if you have them, or reuse the same one for now
-// import hotelImage2 from "../assets/room2.jpg";
 
 function Rooms() {
+    // Apply the dark charcoal background to the entire body
+    useEffect(() => {
+        document.body.style.backgroundColor = "#121212";
+        return () => { document.body.style.backgroundColor = ""; };
+    }, []);
+
+    const roomData = [
+        { id: 1, title: "Deluxe Room", price: "$150", img: hotelImage1 },
+        { id: 2, title: "Executive Suite", price: "$200", img: hotelImage1 },
+        { id: 3, title: "Family Room", price: "$120", img: hotelImage1 },
+        { id: 4, title: "Penthouse", price: "$500", img: hotelImage1 },
+        { id: 5, title: "Single Room", price: "$80", img: hotelImage1 },
+    ];
+
     return (
-        <div className="container my-5">
-            <h2 className="text-center mb-4">Our Luxury Accommodations</h2>
+        <div className="container py-5">
+            <h2 className="text-center mb-5 text-white fw-bold display-6">Our Signature Suites</h2>
+
             <div className="row g-4">
-                {/* Room 1 */}
-                <div className="col-md-4">
-                    <div className="card shadow-sm h-100">
-                        <img src={hotelImage1} className="card-img-top" alt="Deluxe Room" style={{ height: '250px', objectFit: 'cover' }} />
-                        <div className="card-body">
-                            <h5 className="card-title">Deluxe Ocean View</h5>
-                            <p className="card-text">High-end comfort with a stunning view of the coastline.</p>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="fw-bold text-success">$150 / Night</span>
-                                <button className="btn btn-sm btn-outline-primary">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {roomData.map((room) => (
+                    <div className="col-md-4" key={room.id}>
+                        {/* 1. Lighter grey card (#1e1e1e) against darker background (#121212) */}
+                        <div className="card h-100 border-0 shadow-lg" style={{ backgroundColor: '#1e1e1e', color: '#fff' }}>
 
-                {/* Room 2 (Placeholder) */}
-                <div className="col-md-4">
-                    <div className="card shadow-sm h-100">
-                        <img src={hotelImage1} className="card-img-top" alt="Executive Suite" style={{ height: '250px', objectFit: 'cover' }} />
-                        <div className="card-body">
-                            <h5 className="card-title">Executive Suite</h5>
-                            <p className="card-text">Perfect for business travelers who need space and speed.</p>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="fw-bold text-success">$200 / Night</span>
-                                <button className="btn btn-sm btn-outline-primary">Book Now</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            {/* 2. Image with slight opacity so it doesn't look too bright */}
+                            <img
+                                src={room.img}
+                                className="card-img-top opacity-75"
+                                style={{ height: '250px', objectFit: 'cover' }}
+                                alt={room.title}
+                            />
 
-                {/* Room 3 (Placeholder) */}
-                <div className="col-md-4">
-                    <div className="card shadow-sm h-100">
-                        <img src={hotelImage1} className="card-img-top" alt="Family Room" style={{ height: '250px', objectFit: 'cover' }} />
-                        <div className="card-body">
-                            <h5 className="card-title">Family Garden Room</h5>
-                            <p className="card-text">Spacious living for the whole family with direct garden access.</p>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <span className="fw-bold text-success">$120 / Night</span>
-                                <button className="btn btn-sm btn-outline-primary">Book Now</button>
+                            <div className="card-body p-4 d-flex flex-column">
+                                <h5 className="card-title fw-bold mb-2">{room.title}</h5>
+                                <p className="text-secondary small mb-4">
+                                    Luxurious amenities and breathtaking views await you.
+                                </p>
+
+                                <div className="mt-auto d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span className="text-success fw-bold h5 mb-0">{room.price}</span>
+                                        <small className="text-muted ms-1">/night</small>
+                                    </div>
+
+                                    {/* 3. Professional outline button */}
+                                    <button className="btn btn-outline-success btn-sm px-3 fw-bold text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
+                                        View Room
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                ))}
             </div>
         </div>
     );
