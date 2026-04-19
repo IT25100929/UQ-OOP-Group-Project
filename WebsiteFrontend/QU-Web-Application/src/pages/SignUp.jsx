@@ -42,7 +42,7 @@ function SignUp() {
                                 type="text"
                                 className="form-control shadow-none"
                                 style={inputStyle}
-                                placeholder="John Doe"
+                                placeholder="Kamal Ranatunga"
                             />
                         </div>
 
@@ -53,7 +53,7 @@ function SignUp() {
                                 type="tel"
                                 className="form-control shadow-none"
                                 style={inputStyle}
-                                placeholder="+1 (555) 000-0000"
+                                placeholder="+94 000-0000"
                             />
                         </div>
 

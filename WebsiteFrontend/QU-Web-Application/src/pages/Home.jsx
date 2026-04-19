@@ -98,6 +98,9 @@ function Home() {
                 </div>
             </section>
 
+            {/* CUSTOM SPACER */}
+            <div style={{ height: '80px', backgroundColor: '#121212' }}></div>
+
 
 
             <div className="container-fluid p-0">
