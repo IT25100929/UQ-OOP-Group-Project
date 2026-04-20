@@ -21,8 +21,8 @@ function Header() {
 
     // 2. Dynamic Styles based on scroll state
     const navbarClasses = `navbar navbar-expand-lg navbar-dark fixed-top transition-all ${scrolled
-            ? "bg-dark shadow-lg py-2" // Scrolled state (Smaller & Darker)
-            : "bg-transparent py-4"    // Top state (Larger & Transparent)
+        ? "bg-dark shadow-lg py-2" // Scrolled state (Smaller & Darker)
+        : "bg-transparent py-4"    // Top state (Larger & Transparent)
         }`;
 
     return (
@@ -56,7 +56,9 @@ function Header() {
                             <Link className="nav-link text-uppercase fw-semibold" to="/">Home</Link>
                             <Link className="nav-link text-uppercase fw-semibold" to="/rooms">Rooms</Link>
                             <Link className="nav-link text-uppercase fw-semibold" to="/dining">Dining</Link>
+                            <Link className="nav-link text-uppercase fw-semibold" to="restaurant">Restaurant</Link>
                             <Link className="nav-link text-uppercase fw-semibold" to="/contact">Contact</Link>
+
                         </div>
 
                         <div className="d-flex gap-2">

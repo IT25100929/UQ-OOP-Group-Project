@@ -42,7 +42,7 @@ function SignUp() {
                                 type="text"
                                 className="form-control shadow-none"
                                 style={inputStyle}
-                                placeholder="Kamal Ranatunga"
+                                placeholder="Enter"
                             />
                         </div>
 

@@ -546,7 +546,7 @@ install nodejs - it execute javascript code outside of a web browser. we are int
 
 
 
-
+vite - developent server, modern replacement to create react app which is now outdated
 
 
 
