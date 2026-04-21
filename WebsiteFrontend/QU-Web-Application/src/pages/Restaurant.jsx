@@ -1,7 +1,8 @@
-import hotelImage1 from "../assets/pexels-burakeroglu3-31089991.jpg";
-import hotelImage2 from "../assets/pexels-erik-tamo-121801.jpg";
-import hotelImage3 from "../assets/pexels-fajrinugroho-30362945.jpg";
+import hotelImage1 from "../assets/pexels-quang-nguyen-vinh-222549-26729395.jpg";
+import hotelImage2 from "../assets/pexels-quang-nguyen-vinh-222549-6877613.jpg";
+import hotelImage3 from "../assets/pexels-quang-nguyen-vinh-222549-26729406.jpg";
 import MenuCard from "../components/MenuCard";
+import { Link } from 'react-router-dom';
 
 function Restaurant() {
 
@@ -108,9 +109,9 @@ function Restaurant() {
                                 <p className="text-secondary mb-0">Reserve your table online and skip the wait.</p>
                             </div>
                             <div className="col-lg-4 text-center text-lg-end">
-                                <button className="btn btn-outline-success btn-lg rounded-pill px-4 transition-hover">
+                                <Link to="/dining" className="btn btn-outline-success btn-lg rounded-pill px-4 transition-hover">
                                     Book a Table
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     </div>

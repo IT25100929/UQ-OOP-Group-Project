@@ -65,9 +65,13 @@ const RoomDetails = () => {
                         </div>
 
                         <div className="mt-5 p-4 rounded-4" style={{ backgroundColor: '#1e1e1e' }}>
-                            <button className="btn btn-success btn-lg w-100 py-3 rounded-pill fw-bold transition-hover">
+                            <Link
+                                to={`/book-room/${room.id}`}
+                                state={{ roomData: room }}
+                                className="btn btn-success btn-lg w-100 py-3 rounded-pill fw-bold transition-hover"
+                            >
                                 Book This Room Now
-                            </button>
+                            </Link>
                             <p className="text-center text-muted mt-3 mb-0 small">
                                 No credit card required to hold your reservation.
                             </p>

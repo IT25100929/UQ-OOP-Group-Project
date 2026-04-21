@@ -12,6 +12,7 @@ import MainLayout from "./layout/MainLayout";
 import Restaurant from "./pages/Restaurant";
 import AuthLayout from "./layout/AuthLayout";
 import RoomDetails from "./pages/RoomDetails";
+import BookRoom from "./pages/BookRoom";
 
 
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/restaurant" element={<Restaurant />} />
           <Route path="/room/:id" element={<RoomDetails />} />
+          <Route path="/book-room/:id" element={<BookRoom />} />
           {/* <Route path="/profile" element={<UserProfile />} /> */}
         </Route>
 
