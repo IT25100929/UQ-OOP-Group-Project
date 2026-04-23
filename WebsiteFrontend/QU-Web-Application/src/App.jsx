@@ -13,6 +13,8 @@ import Restaurant from "./pages/Restaurant";
 import AuthLayout from "./layout/AuthLayout";
 import RoomDetails from "./pages/RoomDetails";
 import BookRoom from "./pages/BookRoom";
+import BookTable from "./pages/BootTable";
+import Checkout from "./pages/Checkout";
 
 
 
@@ -30,6 +32,8 @@ function App() {
           <Route path="/restaurant" element={<Restaurant />} />
           <Route path="/room/:id" element={<RoomDetails />} />
           <Route path="/book-room/:id" element={<BookRoom />} />
+          <Route path="/book-table/:id" element={<BookTable />} />
+          <Route path="/checkout" element={<Checkout />} />
           {/* <Route path="/profile" element={<UserProfile />} /> */}
         </Route>
 

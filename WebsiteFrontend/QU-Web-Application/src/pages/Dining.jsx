@@ -1,7 +1,7 @@
 import hotelImage1 from "../assets/pexels-aksinfo7-36749693.jpg";
 import { Link } from 'react-router-dom';
 
-function Dinein() {
+function Dining() {
     const restaurants = [
         { id: 1, name: "The Grand Buffet", type: "International", desc: "A world-class spread featuring over 100 global delicacies crafted by executive chefs.", img: hotelImage1 },
         { id: 2, name: "Azure Grill", type: "Seafood & Steak", desc: "Fresh catches and premium cuts grilled to perfection by the poolside under the stars.", img: hotelImage1 },
@@ -101,4 +101,4 @@ function Dinein() {
     );
 }
 
-export default Dinein;
+export default Dining;
