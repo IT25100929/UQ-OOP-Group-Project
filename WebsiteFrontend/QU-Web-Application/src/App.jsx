@@ -15,6 +15,9 @@ import RoomDetails from "./pages/RoomDetails";
 import BookRoom from "./pages/BookRoom";
 import BookTable from "./pages/BootTable";
 import Checkout from "./pages/Checkout";
+import AdminDashboard from "./pages/AdminDashboard";
+import AddDish from "./pages/AddDish";
+import AddRoom from "./pages/AddRoom";
 
 
 
@@ -44,7 +47,12 @@ function App() {
         </Route>
 
         {/* GROUP C: Admin Dashboard (Sidebar only, NO Header/Footer) */}
-        {/* <Route path="/admin/*" element={<AdminDashboard />} /> */}
+        <Route path="/admin" element={<AdminDashboard />}>
+
+          <Route path="add-dish" element={<AddDish />} />
+          <Route path="add-room" element={<AddRoom />} />
+
+        </Route>
 
       </Routes>
     </Router>
