@@ -48,22 +48,22 @@ function Home() {
                     <div className="carousel-item active">
                         <img src={hotelImage1} className="d-block w-100" style={{ height: '500px', objectFit: 'cover' }} alt="..." />
                         <div className="carousel-caption d-none d-md-block">
-                            <h5>First slide label</h5>
-                            <p>Some representative placeholder content for the first slide.</p>
+                            <h5>Grand Welcome</h5>
+                            <p>Retreat to spacious suites featuring panoramic views and premium artisanal amenities.</p>
                         </div>
                     </div>
                     <div className="carousel-item">
                         <img src={hotelImage2} className="d-block w-100" style={{ height: '500px', objectFit: 'cover' }} alt="..." />
                         <div className="carousel-caption d-none d-md-block">
-                            <h5>Second slide label</h5>
-                            <p>Some representative placeholder content for the second slide.</p>
+                            <h5>Discover Our Experience</h5>
+                            <p> An elegant introduction to the core themes presented in this section.</p>
                         </div>
                     </div>
                     <div className="carousel-item">
                         <img src={hotelImage3} className="d-block w-100" style={{ height: '500px', objectFit: 'cover' }} alt="..." />
                         <div className="carousel-caption d-none d-md-block">
-                            <h5>Third slide label</h5>
-                            <p>Some representative placeholder content for the third slide.</p>
+                            <h5>Experience Luxury & Comfort</h5>
+                            <p> A refined presentation of essential information, designed to support the overall narrative.</p>
                         </div>
                     </div>
                 </div>
