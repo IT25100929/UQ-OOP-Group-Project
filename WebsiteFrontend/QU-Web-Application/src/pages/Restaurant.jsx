@@ -1,93 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import MenuCard from "../components/MenuCard";
+
+// Importing assets for the carousel
 import hotelImage1 from "../assets/pexels-quang-nguyen-vinh-222549-26729395.jpg";
 import hotelImage2 from "../assets/pexels-quang-nguyen-vinh-222549-6877613.jpg";
 import hotelImage3 from "../assets/pexels-quang-nguyen-vinh-222549-26729406.jpg";
-import MenuCard from "../components/MenuCard";
 
 function Restaurant() {
-    // 1. CART STATE MANAGEMENT
     const [cart, setCart] = useState([]);
+    const [menuData, setMenuData] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Load cart from localStorage when the page opens
+    // Fetch menu from Spring Boot
+    useEffect(() => {
+        const fetchMenu = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/menu');
+                setMenuData(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching menu:", error);
+                setLoading(false);
+            }
+        };
+        fetchMenu();
+    }, []);
+
+    // Cart persistence
     useEffect(() => {
         const savedCart = JSON.parse(localStorage.getItem('restaurantCart')) || [];
         setCart(savedCart);
     }, []);
 
-    // Save cart to localStorage whenever it changes
     useEffect(() => {
         localStorage.setItem('restaurantCart', JSON.stringify(cart));
     }, [cart]);
 
-    // Function to add items to order
     const addToOrder = (item) => {
         setCart(prevCart => {
             const existingItem = prevCart.find(i => i.id === item.id);
             if (existingItem) {
-                // If item exists, increase quantity
                 return prevCart.map(i =>
                     i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
                 );
             }
-            // If item is new, add to array with quantity 1
             return [...prevCart, { ...item, quantity: 1 }];
         });
     };
 
-    // Calculate total quantity for the floating button
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
-
-    const menuData = [
-        {
-            id: 1,
-            name: "Signature Wagyu Burger",
-            price: 1250,
-            description: "Premium wagyu beef with truffle aioli, aged cheddar, and caramelized onions on a brioche bun.",
-            category: "Main Course",
-            image: hotelImage1
-        },
-        {
-            id: 2,
-            name: "Lobster Thermidor",
-            price: 3400,
-            description: "Creamy lobster meat cooked in a rich wine sauce, topped with parmesan and baked to perfection.",
-            category: "Seafood",
-            image: hotelImage2
-        },
-        {
-            id: 3, // Fixed IDs to be unique
-            name: "Garden Fresh Truffle Pasta",
-            price: 1850,
-            description: "Handmade tagliatelle with seasonal mushrooms and freshly grated black truffles.",
-            category: "Main Course",
-            image: hotelImage3
-        },
-        {
-            id: 4,
-            name: "Spiced Atlantic Salmon",
-            price: 2900,
-            description: "Pan-seared salmon served with roasted asparagus and a lemon-butter dill sauce.",
-            category: "Seafood",
-            image: hotelImage1
-        },
-        {
-            id: 5,
-            name: "Chocolate Lava Sensation",
-            price: 950,
-            description: "Warm dark chocolate cake with a molten center, served with vanilla bean gelato.",
-            category: "Dessert",
-            image: hotelImage2
-        },
-        {
-            id: 6,
-            name: "Iced Caramel Macchiato",
-            price: 650,
-            description: "Premium espresso layered with steamed milk and sweet caramel drizzle over ice.",
-            category: "Beverages",
-            image: hotelImage3
-        }
-    ];
 
     return (
         <div style={{ backgroundColor: '#121212', minHeight: '100vh', position: 'relative' }}>
@@ -169,29 +132,28 @@ function Restaurant() {
                     <div className="mx-auto mt-3" style={{ width: '60px', height: '3px', backgroundColor: '#198754' }}></div>
                 </div>
 
-                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {menuData.map((food) => (
-                        <div className="col" key={food.id}>
-                            {/* Ensure MenuCard handles the onAdd prop */}
-                            <MenuCard item={food} onAdd={() => addToOrder(food)} />
-                        </div>
-                    ))}
-                </div>
+                {loading ? (
+                    <div className="text-center py-5 text-white">
+                        <div className="spinner-border text-success" role="status"></div>
+                        <p className="mt-3">Loading Deliciousness...</p>
+                    </div>
+                ) : (
+                    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {menuData.map((food) => (
+                            <div className="col" key={food.id}>
+                                <MenuCard item={food} onAdd={() => addToOrder(food)} />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
 
-            {/* CSS Styling */}
+            {/* Animations */}
             <style>
                 {`
-                .transition-hover {
-                    transition: all 0.3s ease;
-                }
-                .transition-hover:hover {
-                    transform: translateY(-3px);
-                    box-shadow: 0 8px 15px rgba(25, 135, 84, 0.2);
-                }
-                .animate-bounce {
-                    animation: bounce 2s infinite;
-                }
+                .transition-hover { transition: all 0.3s ease; }
+                .transition-hover:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(25, 135, 84, 0.2); }
+                .animate-bounce { animation: bounce 2s infinite; }
                 @keyframes bounce {
                     0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
                     40% {transform: translateY(-10px);}

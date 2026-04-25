@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Checkout = () => {
     const navigate = useNavigate();
     const [cart, setCart] = useState([]);
     const [customer, setCustomer] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        notes: ''
+        name: '', email: '', phone: '', address: '', notes: ''
     });
 
     useEffect(() => {
         const savedCart = JSON.parse(localStorage.getItem('restaurantCart')) || [];
         setCart(savedCart);
-
-        // This ensures the page starts at the top when navigated to
         window.scrollTo(0, 0);
     }, []);
 
@@ -30,120 +25,146 @@ const Checkout = () => {
 
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
+
         const orderPayload = {
-            customerInfo: customer,
-            items: cart,
-            totalAmount: total,
-            orderDate: new Date().toISOString()
+            customerName: customer.name,
+            customerEmail: customer.email,
+            customerPhone: customer.phone,
+            deliveryAddress: customer.address,
+            specialInstructions: customer.notes,
+            items: cart.map(item => ({
+                menuItemId: item.id,
+                quantity: item.quantity,
+                priceAtOrder: item.price
+            })),
+            totalAmount: total
         };
-        console.log("Sending to Spring Boot:", orderPayload);
-        alert("Order Placed Successfully!");
-        localStorage.removeItem('restaurantCart');
-        navigate('/restaurant');
+
+        try {
+            const response = await axios.post('http://localhost:8080/api/orders', orderPayload);
+            if (response.status === 201 || response.status === 200) {
+                alert("Order Placed Successfully!");
+                localStorage.removeItem('restaurantCart');
+                navigate('/restaurant');
+            }
+        } catch (error) {
+            console.error("Order Submission Failed:", error);
+            alert("Failed to place order. Please check connection to backend.");
+        }
     };
 
     if (cart.length === 0) {
         return (
-            <div style={{ backgroundColor: '#121212', minHeight: '100vh', paddingTop: '100px' }} className="text-center text-white">
-                <h2 className="mb-4">Your cart is empty</h2>
-                <Link to="/restaurant" className="btn btn-success rounded-pill px-4">Go Back to Menu</Link>
+            <div style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '120px' }} className="text-center text-white p-5">
+                <div>
+                    <i className="bi bi-cart-x text-secondary" style={{ fontSize: '4rem' }}></i>
+                    <h2 className="mt-4 fw-bold">Your cart is empty</h2>
+                    <p className="text-secondary mb-4">Add some delicious items from the menu first!</p>
+                    <Link to="/restaurant" className="btn btn-success rounded-pill px-5 py-2 fw-bold shadow">
+                        Go Back to Menu
+                    </Link>
+                </div>
             </div>
         );
     }
 
     return (
-        /* Added pt-5 and adjusted minHeight to ensure no white gaps */
-        <div style={{
-            backgroundColor: '#121212',
-            minHeight: '100vh',
-            color: 'white',
-            paddingTop: '80px', // Adjust this value to match your Header's height
-            marginTop: '0'
-        }}>
-            {/* Removed mt-5 from container and used py-5 for internal spacing */}
-            <div className="container py-5">
-                <h2 className="display-6 fw-bold mb-5 border-bottom border-secondary pb-3">Complete Your Order</h2>
+        /* Increased paddingTop to 120px to prevent header overlap */
+        <div style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', color: 'white', paddingTop: '60px' }}>
+            <div className="container pb-5 mt-5">
+                {/* Page Title */}
+                <div className="mb-5">
+                    <h2 className="fw-bold text-success mb-1">Secure Checkout</h2>
+                    <p className="text-secondary">Provide your details to complete the order at The Royal Palms</p>
+                </div>
 
-                <div className="row g-5">
+                <div className="row g-4">
+                    {/* LEFT COLUMN: Customer Form */}
                     <div className="col-lg-7">
-                        <div className="p-4 rounded-4" style={{ backgroundColor: '#1e1e1e' }}>
-                            <h4 className="mb-4 text-success">Delivery Details</h4>
+                        <div className="card border-0 shadow-lg p-4" style={{ backgroundColor: '#161616', borderRadius: '15px' }}>
+                            <h5 className="mb-4 text-white border-bottom border-secondary pb-3">Delivery Information</h5>
                             <form onSubmit={handlePlaceOrder}>
-                                <div className="mb-3">
-                                    <label className="form-label text-secondary small">Full Name</label>
-                                    <input type="text" name="name" className="form-control bg-dark border-secondary text-white shadow-none" required onChange={handleInputChange} />
-                                </div>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label text-secondary small">Email</label>
-                                        <input type="email" name="email" className="form-control bg-dark border-secondary text-white shadow-none" required onChange={handleInputChange} />
+                                <div className="row g-3">
+                                    <div className="col-md-12 mb-2">
+                                        <label className="text-secondary small mb-1 ms-1">Full Name</label>
+                                        <input type="text" name="name" placeholder="Seran" className="form-control bg-dark border-secondary text-white py-2" required onChange={handleInputChange} />
                                     </div>
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label text-secondary small">Phone Number</label>
-                                        <input type="tel" name="phone" className="form-control bg-dark border-secondary text-white shadow-none" required onChange={handleInputChange} />
+                                    <div className="col-md-6 mb-2">
+                                        <label className="text-secondary small mb-1 ms-1">Email Address</label>
+                                        <input type="email" name="email" placeholder="example@email.com" className="form-control bg-dark border-secondary text-white py-2" required onChange={handleInputChange} />
+                                    </div>
+                                    <div className="col-md-6 mb-2">
+                                        <label className="text-secondary small mb-1 ms-1">Phone Number</label>
+                                        <input type="tel" name="phone" placeholder="07XXXXXXXX" className="form-control bg-dark border-secondary text-white py-2" required onChange={handleInputChange} />
+                                    </div>
+                                    <div className="col-md-12 mb-2">
+                                        <label className="text-secondary small mb-1 ms-1">Address</label>
+                                        <textarea name="address" placeholder="Enter full delivery address" className="form-control bg-dark border-secondary text-white" rows="3" required onChange={handleInputChange}></textarea>
+                                    </div>
+                                    <div className="col-md-12">
+                                        <label className="text-secondary small mb-1 ms-1">Special Instructions (Notes)</label>
+                                        <input type="text" name="notes" placeholder="e.g. Extra spicy, door code 1234" className="form-control bg-dark border-secondary text-white py-2" onChange={handleInputChange} />
                                     </div>
                                 </div>
-                                <div className="mb-3">
-                                    <label className="form-label text-secondary small">Delivery Address</label>
-                                    <textarea name="address" rows="3" className="form-control bg-dark border-secondary text-white shadow-none" required onChange={handleInputChange}></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label text-secondary small">Special Instructions (Optional)</label>
-                                    <input type="text" name="notes" className="form-control bg-dark border-secondary text-white shadow-none" placeholder="No spicy, extra napkins, etc." onChange={handleInputChange} />
-                                </div>
-                                <button type="submit" className="btn btn-success btn-lg w-100 rounded-pill mt-4 fw-bold shadow">
-                                    Confirm & Place Order (Rs. {total})
+                                <button type="submit" className="btn btn-success btn-lg w-100 rounded-pill mt-5 fw-bold shadow transition-hover py-3">
+                                    PLACE ORDER • Rs. {total.toLocaleString()}
                                 </button>
                             </form>
                         </div>
                     </div>
 
+                    {/* RIGHT COLUMN: Order Summary */}
                     <div className="col-lg-5">
-                        <div className="p-4 rounded-4" style={{ border: '1px solid #333', backgroundColor: '#1a1a1a' }}>
-                            <h4 className="mb-4">Order Summary</h4>
-                            <div className="cart-items-list mb-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                                {cart.map((item) => (
-                                    <div key={item.id} className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
-                                        <div className="d-flex align-items-center">
-                                            <div className="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '30px', height: '30px', fontSize: '0.8rem' }}>
-                                                {item.quantity}
+                        {/* Adjusted 'top' to 140px so the sticky card doesn't hit the header when scrolling */}
+                        <div className="card border-0 shadow-lg p-4 sticky-top" style={{ backgroundColor: '#161616', borderRadius: '15px', top: '140px' }}>
+                            <h5 className="mb-4 text-success fw-bold">Order Summary</h5>
+
+                            <div className="custom-scroll pe-2" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                                {cart.map((item, index) => (
+                                    <div key={index} className="d-flex align-items-center mb-3 bg-black p-2 rounded-3 border border-secondary border-opacity-25">
+                                        <img
+                                            src={`/assets/menu/${item.image}`}
+                                            alt={item.name}
+                                            className="rounded"
+                                            style={{ width: '55px', height: '55px', objectFit: 'cover' }}
+                                        />
+                                        <div className="ms-3 flex-grow-1">
+                                            <div className="d-flex justify-content-between">
+                                                <h6 className="mb-0 small fw-bold text-white">{item.name}</h6>
+                                                <span className="small text-secondary fw-bold">x{item.quantity}</span>
                                             </div>
-                                            <div>
-                                                <p className="mb-0 fw-bold">{item.name}</p>
-                                                <small className="text-secondary">Rs. {item.price} each</small>
-                                            </div>
+                                            <span className="text-success small">Rs. {(item.price * item.quantity).toLocaleString()}</span>
                                         </div>
-                                        <span className="fw-bold text-success">Rs. {item.price * item.quantity}</span>
                                     </div>
                                 ))}
                             </div>
-                            <div className="d-flex justify-content-between mb-2">
-                                <span className="text-secondary">Subtotal</span>
-                                <span>Rs. {subtotal}</span>
+
+                            <hr className="border-secondary mt-4 mb-3" />
+
+                            <div className="d-flex justify-content-between text-secondary mb-2 small">
+                                <span>Subtotal</span>
+                                <span>Rs. {subtotal.toLocaleString()}</span>
                             </div>
-                            <div className="d-flex justify-content-between mb-3 pb-3 border-bottom border-secondary">
-                                <span className="text-secondary">Delivery Fee</span>
-                                <span>Rs. {deliveryFee}</span>
+                            <div className="d-flex justify-content-between text-secondary mb-3 small">
+                                <span>Delivery Fee</span>
+                                <span className="text-info">Rs. {deliveryFee.toLocaleString()}</span>
                             </div>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <h4 className="fw-bold">Total</h4>
-                                <h4 className="fw-bold text-success">Rs. {total}</h4>
+
+                            <div className="d-flex justify-content-between text-white fw-bold fs-4 mt-2">
+                                <span>Total Amount</span>
+                                <span className="text-success">Rs. {total.toLocaleString()}</span>
+                            </div>
+
+                            <div className="mt-4 p-3 bg-dark rounded-3 text-center border border-secondary border-opacity-10">
+                                <p className="small text-light mb-0">
+                                    <i className="bi bi-shield-check text-success me-2"></i>
+                                    Secure and Private Connection
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {/* Global Styles to clean up potential browser gaps */}
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                body { margin: 0; padding: 0; background-color: #121212; }
-                .form-control:focus {
-                    background-color: #2b2b2b;
-                    border-color: #198754;
-                    color: white;
-                }
-            `}} />
         </div>
     );
 };
