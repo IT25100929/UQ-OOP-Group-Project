@@ -18,6 +18,7 @@ import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddDish from "./pages/AddDish";
 import AddRoom from "./pages/AddRoom";
+import AddDining from "./pages/AddDining";
 
 
 
@@ -51,6 +52,7 @@ function App() {
 
           <Route path="add-dish" element={<AddDish />} />
           <Route path="add-room" element={<AddRoom />} />
+          <Route path="add-dining" element={<AddDining />} />
 
         </Route>
 

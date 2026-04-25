@@ -14,20 +14,30 @@ function AddRoom() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Convert comma string to Array, matching the Java List<String>
+
+        // 1. Clean the price string (remove '$' or commas if user typed them)
+        const cleanPrice = room.price.replace(/[$,]/g, '');
+
+        // 2. Prepare the payload for Spring Boot
         const roomData = {
-            ...room,
-            description: room.desc, // mapping 'desc' to 'description' for the backend
+            title: room.title,
+            // Convert to a number (Double)
+            price: parseFloat(cleanPrice),
+            // Map 'desc' from state to 'description' for the Java Model
+            description: room.desc,
+            imageUrl: room.imageUrl,
+            // Convert comma string to Array for List<String> in Java
             amenities: room.amenities.split(',').map(item => item.trim())
         };
 
         try {
             await axios.post("http://localhost:8080/api/rooms", roomData);
             alert("Luxury Room added to The Royal Palms!");
+            // Reset form
             setRoom({ title: '', price: '', desc: '', imageUrl: '', amenities: '' });
         } catch (err) {
             console.error(err);
-            alert("Failed to save room.");
+            alert("Failed to save room. Check if the price is a valid number.");
         }
     };
 
@@ -44,13 +54,14 @@ function AddRoom() {
 
                     <div className="mb-3">
                         <label className="text-secondary small fw-bold">PRICE PER NIGHT</label>
-                        <input type="text" className="form-control shadow-none" style={inputStyle} placeholder="e.g. $500"
+                        {/* Change type to number to help the user, or keep text and use the regex logic above */}
+                        <input type="text" className="form-control shadow-none" style={inputStyle} placeholder="e.g. 500.00"
                             value={room.price} onChange={(e) => setRoom({ ...room, price: e.target.value })} required />
                     </div>
 
                     <div className="mb-3">
                         <label className="text-secondary small fw-bold">IMAGE URL</label>
-                        <input type="text" className="form-control shadow-none" style={inputStyle} placeholder="Paste image link here"
+                        <input type="text" className="form-control shadow-none" style={inputStyle} placeholder="/assets/room/image.jpg"
                             value={room.imageUrl} onChange={(e) => setRoom({ ...room, imageUrl: e.target.value })} required />
                     </div>
 

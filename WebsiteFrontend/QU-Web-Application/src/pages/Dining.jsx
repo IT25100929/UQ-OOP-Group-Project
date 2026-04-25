@@ -1,14 +1,24 @@
-import hotelImage1 from "../assets/pexels-aksinfo7-36749693.jpg";
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
+// Import your hero image
+import hotelImage1 from "../assets/pexels-aksinfo7-36749693.jpg";
 
 function Dining() {
-    const restaurants = [
-        { id: 1, name: "The Grand Buffet", type: "International", desc: "A world-class spread featuring over 100 global delicacies crafted by executive chefs.", img: hotelImage1 },
-        { id: 2, name: "Azure Grill", type: "Seafood & Steak", desc: "Fresh catches and premium cuts grilled to perfection by the poolside under the stars.", img: hotelImage1 },
-        { id: 3, name: "Sakura Zen", type: "Japanese Fusion", desc: "Authentic sushi and teppanyaki in a serene, modern setting that honors tradition.", img: hotelImage1 },
-        { id: 4, name: "The Spice Route", type: "Indian Fine Dining", desc: "Rich heritage flavors served with a contemporary twist and aromatic spices.", img: hotelImage1 },
-        { id: 5, name: "Velvet Lounge", type: "Tapas & Cocktails", desc: "Small plates and artisan spirits perfect for evening unwinding in a plush atmosphere.", img: hotelImage1 },
-    ];
+    const [restaurants, setRestaurants] = useState([]);
+
+    useEffect(() => {
+        const fetchDining = async () => {
+            try {
+                const res = await axios.get("http://localhost:8080/api/dining");
+                setRestaurants(res.data);
+            } catch (err) {
+                console.error("Error fetching dining options", err);
+            }
+        };
+        fetchDining();
+    }, []);
 
     return (
         <div className="container-fluid p-0 bg-black text-white" style={{ minHeight: '100vh' }}>
@@ -52,7 +62,7 @@ function Dining() {
                 </div>
             </div>
 
-            {/* Restaurants Full-Width Section */}
+            {/* Restaurants Full-Width Section - Dynamic Data */}
             <div className="container-fluid p-0">
                 {restaurants.map((res, index) => (
                     <div key={res.id} className={`row g-0 align-items-center ${index % 2 !== 0 ? 'flex-row-reverse' : ''}`}
@@ -61,10 +71,15 @@ function Dining() {
                         {/* Image Column */}
                         <div className="col-lg-7 overflow-hidden">
                             <img
-                                src={res.img}
+                                /* Logic for local images in public/assets/dining/ */
+                                src={res.imageUrl?.startsWith('http')
+                                    ? res.imageUrl
+                                    : `/assets/dining/${res.imageUrl}`
+                                }
                                 alt={res.name}
                                 className="w-100 h-100"
                                 style={{ objectFit: 'cover', minHeight: '600px' }}
+                                onError={(e) => { e.target.src = 'https://via.placeholder.com/800x600?text=Luxury+Dining'; }}
                             />
                         </div>
 
@@ -76,7 +91,7 @@ function Dining() {
                                 </small>
                                 <h2 className="display-4 fw-bold my-3">{res.name}</h2>
                                 <p className="lead mb-4" style={{ color: '#adb5bd', lineHeight: '1.8', fontSize: '1.1rem' }}>
-                                    {res.desc}
+                                    {res.description}
                                 </p>
                                 <div>
                                     <Link
@@ -95,7 +110,7 @@ function Dining() {
 
             {/* Footer-like Call to Action */}
             <div className="py-5 text-center bg-black border-top border-secondary" style={{ opacity: 0.5 }}>
-                <p className="text-muted italic mb-0">Walk-ins are welcome, but reservations are recommended.</p>
+                <p className="text-light italic mb-0">Walk-ins are welcome, but reservations are recommended.</p>
             </div>
         </div>
     );

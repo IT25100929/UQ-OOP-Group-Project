@@ -9,7 +9,6 @@ const RoomDetails = () => {
     useEffect(() => {
         const fetchRoomData = async () => {
             try {
-                // Fetch the specific room from your Spring Boot API
                 const response = await axios.get(`http://localhost:8080/api/rooms/${id}`);
                 setRoom(response.data);
             } catch (error) {
@@ -31,7 +30,6 @@ const RoomDetails = () => {
 
     return (
         <div style={{ backgroundColor: '#121212', minHeight: '100vh' }}>
-            {/* Header Spacer */}
             <div style={{ height: '80px' }}></div>
 
             <div className="container py-lg-5 py-3 text-white">
@@ -40,26 +38,29 @@ const RoomDetails = () => {
                 </Link>
 
                 <div className="row g-5">
-                    {/* Image Column - Now using database imageUrl */}
                     <div className="col-md-7">
                         <div className="card border-0 rounded-4 overflow-hidden shadow-lg bg-transparent">
                             <img
-                                src={room.imageUrl}
+                                /* Same robust path logic as Rooms.jsx */
+                                src={room.imageUrl?.startsWith('http') ? room.imageUrl : `/assets/room/${room.imageUrl}`}
                                 className="img-fluid"
                                 alt={room.title}
                                 style={{ objectFit: 'cover', minHeight: '500px', width: '100%' }}
+                                onError={(e) => { e.target.src = 'https://via.placeholder.com/800x500?text=Luxury+Suite+Image'; }}
                             />
                         </div>
                     </div>
 
-                    {/* Content Column */}
                     <div className="col-md-5">
                         <h6 className="text-success text-uppercase fw-bold mb-2" style={{ letterSpacing: '2px' }}>
                             Premium Experience
                         </h6>
                         <h1 className="display-4 fw-bold mb-3">{room.title}</h1>
+
+                        {/* FORMATTING: Added '$' and fixed decimal places */}
                         <h3 className="text-success mb-4">
-                            {room.price} <small className="text-secondary fs-6">/ night</small>
+                            ${typeof room.price === 'number' ? room.price.toFixed(2) : room.price}
+                            <small className="text-secondary fs-6"> / night</small>
                         </h3>
 
                         <p className="lead text-secondary mb-4" style={{ lineHeight: '1.8' }}>
@@ -75,7 +76,6 @@ const RoomDetails = () => {
                             ))}
                         </div>
 
-                        {/* Booking Section */}
                         <div className="mt-5 p-4 rounded-4" style={{ backgroundColor: '#1e1e1e' }}>
                             <Link to={`/book-room/${room.id}`} className="btn btn-success btn-lg w-100 py-3 rounded-pill fw-bold">
                                 Book This Room Now
