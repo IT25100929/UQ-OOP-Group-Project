@@ -13,6 +13,7 @@ function footer() {
                             <li>Home</li>
                             <li>Rooms</li>
                             <li>About Us</li>
+
                         </ul>
                     </div>
                     <div className="col-md-4 mb-4 text-end">

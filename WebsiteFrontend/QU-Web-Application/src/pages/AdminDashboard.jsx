@@ -32,6 +32,16 @@ function AdminDashboard() {
                             <i className="bi bi-egg-fried me-2"></i> Add Dining Venue
                         </Link>
                     </li>
+                    <li>
+                        <Link to="/admin/add-staff" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-people me-2"></i> Update Leadership
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/feedback" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-chat-left-text me-2"></i> Guest Feedback
+                        </Link>
+                    </li>
                 </ul>
                 <button onClick={handleLogout} className="btn btn-outline-danger rounded-pill">Sign Out</button>
             </div>

@@ -19,6 +19,10 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AddDish from "./pages/AddDish";
 import AddRoom from "./pages/AddRoom";
 import AddDining from "./pages/AddDining";
+import AdminAddStaff from "./pages/AdminAddStaff";
+import AdminFeedback from "./pages/AdminFeedback";
+import Maintenance from "./pages/Maintenance";
+import AdminHome from "./pages/AdminHome";
 
 
 
@@ -50,9 +54,15 @@ function App() {
         {/* GROUP C: Admin Dashboard (Sidebar only, NO Header/Footer) */}
         <Route path="/admin" element={<AdminDashboard />}>
 
+          {/* This makes AdminHome the default view when you hit /admin */}
+          <Route index element={<AdminHome />} />
+
           <Route path="add-dish" element={<AddDish />} />
           <Route path="add-room" element={<AddRoom />} />
           <Route path="add-dining" element={<AddDining />} />
+          <Route path="add-staff" element={<AdminAddStaff />} />
+          <Route path="feedback" element={<AdminFeedback />} />
+          <Route path="maintenance" element={<Maintenance />} />
 
         </Route>
 
