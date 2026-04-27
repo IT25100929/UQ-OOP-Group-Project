@@ -13,7 +13,7 @@ import Restaurant from "./pages/Restaurant";
 import AuthLayout from "./layout/AuthLayout";
 import RoomDetails from "./pages/RoomDetails";
 import BookRoom from "./pages/BookRoom";
-import BookTable from "./pages/BootTable";
+import BookTable from "./pages/BookTable";
 import Checkout from "./pages/Checkout";
 import AdminDashboard from "./pages/AdminDashboard";
 import AddDish from "./pages/AddDish";
