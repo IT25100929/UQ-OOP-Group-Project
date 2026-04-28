@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "menu_items")
-@Data // Add this if using Lombok
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuItem {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/reservations")
-@CrossOrigin(origins = "http://localhost:5173") // Adjust to your React port
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReservationController {
 
     @Autowired

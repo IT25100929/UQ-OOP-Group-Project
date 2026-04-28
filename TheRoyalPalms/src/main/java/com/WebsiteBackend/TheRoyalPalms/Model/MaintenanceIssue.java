@@ -13,12 +13,12 @@ public class MaintenanceIssue {
     private Long id;
 
     private String issueTitle;
-    private String priority; // e.g., Low, Medium, High, Urgent
+    private String priority; // e.g.Low, Medium, High, Urgent
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String status; // e.g., Pending, In Progress, Resolved
+    private String status; // e.g.Pending, In Progress, Resolved
     private LocalDateTime reportedAt;
 
     @PrePersist

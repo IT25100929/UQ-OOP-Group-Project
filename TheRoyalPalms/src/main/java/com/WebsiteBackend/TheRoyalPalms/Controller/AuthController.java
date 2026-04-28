@@ -23,7 +23,7 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return userRepository.findByEmail(loginRequest.getEmail())
                 .map(user -> {
-                    // Direct plain-text comparison
+                    // Direct plain text comparison
                     if (user.getPassword().equals(loginRequest.getPassword())) {
                         Map<String, Object> response = new HashMap<>();
                         response.put("token", "dummy-jwt-token");

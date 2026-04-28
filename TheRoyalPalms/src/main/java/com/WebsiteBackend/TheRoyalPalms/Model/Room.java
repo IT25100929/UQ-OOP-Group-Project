@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "rooms")
-@Data // Lombok: Generates Getters, Setters, ToString, etc.
+@Data
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Room {
     private String title;
     private String price;
 
-    @Column(length = 2000) // Ensures long descriptions don't get cut off
+    @Column(length = 2000) // Ensures long descriptions
     private String description;
 
     private String imageUrl;

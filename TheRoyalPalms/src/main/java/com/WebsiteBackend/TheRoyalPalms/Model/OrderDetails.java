@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
-@Data // This automatically creates all Getters, Setters, toString, and equals methods
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDetails {

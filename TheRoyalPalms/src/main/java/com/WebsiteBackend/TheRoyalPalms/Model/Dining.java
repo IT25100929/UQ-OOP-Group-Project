@@ -12,7 +12,7 @@ public class Dining {
     private Long id;
 
     private String name;
-    private String type; // e.g., International, Japanese Fusion
+    private String type; // e.g. International, Japanese Fusion
 
     @Column(length = 1500) // Increased length for longer descriptions
     private String description;
