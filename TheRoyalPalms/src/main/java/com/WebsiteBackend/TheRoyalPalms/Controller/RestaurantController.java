@@ -18,21 +18,16 @@ public class RestaurantController {
     @Autowired
     private RestaurantService service;
 
-    // GET: http://localhost:8080/api/menu
     @GetMapping("/menu")
     public List<MenuItem> getMenu() {
         return service.getAllMenuItems();
     }
 
-    // POST: http://localhost:8080/api/orders
     @PostMapping("/orders")
     public ResponseEntity<OrderDetails> placeOrder(@RequestBody OrderDetails order) {
         return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
     }
 
-    // Inside RestaurantController.java
-
-    // POST: http://localhost:8080/api/menu
     @PostMapping("/menu")
     public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
         return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
