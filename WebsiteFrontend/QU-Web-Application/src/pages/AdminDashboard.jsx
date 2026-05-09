@@ -5,9 +5,15 @@ function AdminDashboard() {
     return (
         <div className="d-flex" style={{ backgroundColor: '#121212', minHeight: '100vh', color: 'white' }}>
 
-            {/* --- SIDEBAR (Fixed) --- */}
+            {/* --- SIDEBAR (Fixed & Vertically Scrollable) --- */}
             <div className="d-flex flex-column p-3 text-white bg-black border-end border-secondary"
-                style={{ width: '260px', position: 'fixed', height: '100vh' }}>
+                style={{
+                    width: '260px',
+                    position: 'fixed',
+                    height: '100vh',
+                    overflowY: 'auto', // Enforces vertical scroll
+                    overflowX: 'hidden' // Disables horizontal scroll
+                }}>
 
                 <div className="px-2 mb-4">
                     <h4 className="fw-bold text-success m-0">Admin Panel</h4>
@@ -16,8 +22,28 @@ function AdminDashboard() {
 
                 <ul className="nav nav-pills flex-column mb-auto">
                     <li className="nav-item">
-                        <Link to="/admin" className="nav-link text-white mb-2 p-3 border-bottom border-dark border-opacity-25 hover-effect">
+                        <Link to="/admin" className="nav-link text-white mb-2 p-3 border-bottom border-dark border-opacity-25">
                             <i className="bi bi-speedometer2 me-2"></i> Dashboard
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/bookings" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-calendar-check me-2"></i> View Bookings
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/reservations" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-egg-fried me-2"></i> View Reservations
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/orders" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-cart-check me-2"></i> Food Orders
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin/feedback" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-chat-left-text me-2"></i> Guest Feedback
                         </Link>
                     </li>
                     <li>
@@ -31,11 +57,6 @@ function AdminDashboard() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/admin/maintenance" className="nav-link text-white mb-2 p-3">
-                            <i className="bi bi-tools me-2"></i> Maintenance
-                        </Link>
-                    </li>
-                    <li>
                         <Link to="/admin/add-dining" className="nav-link text-white mb-2 p-3">
                             <i className="bi bi-egg-fried me-2"></i> Add Dining Venue
                         </Link>
@@ -46,14 +67,14 @@ function AdminDashboard() {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/admin/feedback" className="nav-link text-white mb-2 p-3">
-                            <i className="bi bi-chat-left-text me-2"></i> Guest Feedback
+                        <Link to="/admin/maintenance" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-tools me-2"></i> Maintenance
                         </Link>
                     </li>
                 </ul>
 
-                {/* --- REPLACED LOGOUT WITH HOME BUTTON --- */}
-                <div className="pt-3 border-top border-secondary">
+                {/* --- BACK TO WEBSITE BUTTON --- */}
+                <div className="pt-3 mt-3 border-top border-secondary pb-2">
                     <Link to="/" className="btn btn-outline-success w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 py-2">
                         <i className="bi bi-house-door"></i>
                         <span>Back to Website</span>

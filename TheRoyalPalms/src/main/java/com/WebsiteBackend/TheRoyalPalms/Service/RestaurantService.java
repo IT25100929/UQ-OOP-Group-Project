@@ -27,6 +27,14 @@ public class RestaurantService {
         return orderRepo.save(order);
     }
 
+    public List<OrderDetails> getAllOrders() {
+        return orderRepo.findAll();
+    }
+
+    public void deleteOrder(Long id) {
+        orderRepo.deleteById(id);
+    }
+
     // Inside RestaurantService.java
 
     public MenuItem saveMenuItem(MenuItem item) {

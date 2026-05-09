@@ -6,6 +6,7 @@ import com.WebsiteBackend.TheRoyalPalms.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,12 +20,16 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Inject the same bean used in registration
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         return userRepository.findByEmail(loginRequest.getEmail())
                 .map(user -> {
-                    // Direct plain text comparison
-                    if (user.getPassword().equals(loginRequest.getPassword())) {
+                    // Use matches() instead of equals()
+                    // matches(rawPassword, encodedPassword)
+                    if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
                         Map<String, Object> response = new HashMap<>();
                         response.put("token", "dummy-jwt-token");
                         response.put("role", user.getRole());

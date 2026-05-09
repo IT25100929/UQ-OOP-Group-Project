@@ -15,6 +15,9 @@ function BookRoom() {
         guestEmail: '',
     });
 
+    // Helper to get today's date in YYYY-MM-DD format for input constraints
+    const today = new Date().toISOString().split('T')[0];
+
     useEffect(() => {
         const fetchRoom = async () => {
             try {
@@ -27,20 +30,50 @@ function BookRoom() {
         fetchRoom();
     }, [id]);
 
+    const validateForm = () => {
+        const { checkIn, checkOut, guestEmail } = bookingDetails;
+
+        // 1. Email Format Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(guestEmail)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        // 2. Date Logic: Check-in cannot be in the past
+        if (checkIn < today) {
+            alert("Check-in date cannot be in the past.");
+            return false;
+        }
+
+        // 3. Date Logic: Check-out must be after Check-in
+        if (checkOut <= checkIn) {
+            alert("Check-out date must be at least one day after the check-in date.");
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Run validations before hitting the API
+        if (!validateForm()) return;
+
         setIsSubmitting(true);
         try {
-            // Updated to use axios for consistency
             const response = await axios.post(`http://localhost:8080/api/bookings/${id}`, bookingDetails);
 
             if (response.status === 200 || response.status === 201) {
                 alert("Booking Successful! See you soon at The Royal Palms.");
-                navigate('/rooms'); // Or to a success page
+                navigate('/rooms');
             }
         } catch (error) {
             console.error(error);
-            alert("Booking failed. Please try again.");
+            // Check if backend returned a specific error message (like a date conflict)
+            const errorMessage = error.response?.data || "Booking failed. Please try again.";
+            alert(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -59,7 +92,7 @@ function BookRoom() {
                     {/* Form Section */}
                     <div className="col-lg-7">
                         <div className="p-4 rounded-4 bg-dark border border-secondary shadow-lg">
-                            <h2 className="mb-4 fw-bold">Reservation Details</h2>
+                            <h2 className="mb-4 fw-bold">Booking Details</h2>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3">
                                     <label className="form-label small text-uppercase text-secondary fw-bold">Full Name</label>
@@ -90,6 +123,7 @@ function BookRoom() {
                                             type="date"
                                             className="form-control bg-black text-white border-secondary shadow-none p-3"
                                             required
+                                            min={today}
                                             value={bookingDetails.checkIn}
                                             onChange={(e) => setBookingDetails({ ...bookingDetails, checkIn: e.target.value })}
                                         />
@@ -100,12 +134,18 @@ function BookRoom() {
                                             type="date"
                                             className="form-control bg-black text-white border-secondary shadow-none p-3"
                                             required
+                                            // Prevents selecting a date before or on the check-in date
+                                            min={bookingDetails.checkIn ? bookingDetails.checkIn : today}
                                             value={bookingDetails.checkOut}
                                             onChange={(e) => setBookingDetails({ ...bookingDetails, checkOut: e.target.value })}
                                         />
                                     </div>
                                 </div>
-                                <button disabled={isSubmitting} className="btn btn-success w-100 py-3 mt-3 fw-bold text-uppercase" style={{ letterSpacing: '1px' }}>
+                                <button
+                                    disabled={isSubmitting}
+                                    className="btn btn-success w-100 py-3 mt-3 fw-bold text-uppercase"
+                                    style={{ letterSpacing: '1px' }}
+                                >
                                     {isSubmitting ? "PROCESSING..." : "CONFIRM RESERVATION"}
                                 </button>
                             </form>

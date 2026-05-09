@@ -32,4 +32,15 @@ public class RestaurantController {
     public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
         return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
     }
+
+    @GetMapping("/orders")
+    public List<OrderDetails> getAllOrders() {
+        return service.getAllOrders();
+    }
+
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        service.deleteOrder(id);
+        return ResponseEntity.noContent().build();
+    }
 }

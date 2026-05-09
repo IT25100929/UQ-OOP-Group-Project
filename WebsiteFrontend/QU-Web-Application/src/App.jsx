@@ -24,7 +24,9 @@ import AdminFeedback from "./pages/AdminFeedback";
 import Maintenance from "./pages/Maintenance";
 import AdminHome from "./pages/AdminHome";
 import ProtectedRoute from "./pages/ProtectedRoute";
-
+import AdminBookings from "./pages/AdminBookings";
+import AdminReservations from "./pages/AdminReservations";
+import AdminOrders from "./pages/AdminOrders";
 
 
 function App() {
@@ -60,6 +62,9 @@ function App() {
             {/* This makes AdminHome the default view when you hit /admin */}
             <Route index element={<AdminHome />} />
 
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="reservations" element={<AdminReservations />} />
+            <Route path="bookings" element={<AdminBookings />} />
             <Route path="add-dish" element={<AddDish />} />
             <Route path="add-room" element={<AddRoom />} />
             <Route path="add-dining" element={<AddDining />} />

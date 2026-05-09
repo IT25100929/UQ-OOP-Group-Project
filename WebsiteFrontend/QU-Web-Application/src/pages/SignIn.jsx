@@ -45,8 +45,8 @@ function SignIn() {
                     <div className="mb-3">
                         <i className="bi bi-shield-lock-fill" style={{ fontSize: '3rem', color: '#198754' }}></i>
                     </div>
-                    <h3 className="fw-bold">Management Portal</h3>
-                    <p className="text-muted small">Please sign in to access the dashboard</p>
+                    <h3 className="fw-bold">Welcome Back!</h3>
+                    <p className="text-light small">Please sign in to access the dashboard</p>
                 </div>
 
                 {error && <div className="alert alert-danger border-0 bg-danger text-white py-2 small">{error}</div>}
