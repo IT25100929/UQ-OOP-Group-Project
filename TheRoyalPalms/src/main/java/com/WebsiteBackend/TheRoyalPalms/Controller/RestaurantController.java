@@ -3,12 +3,16 @@ package com.WebsiteBackend.TheRoyalPalms.Controller;
 import com.WebsiteBackend.TheRoyalPalms.Model.MenuItem;
 import com.WebsiteBackend.TheRoyalPalms.Model.OrderDetails;
 import com.WebsiteBackend.TheRoyalPalms.Service.RestaurantService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -23,8 +27,22 @@ public class RestaurantController {
         return service.getAllMenuItems();
     }
 
+    @DeleteMapping("/menu/{id}")
+    public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {
+        service.deleteMenuItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/orders")
-    public ResponseEntity<OrderDetails> placeOrder(@RequestBody OrderDetails order) {
+    public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderDetails order, BindingResult result) {
+        if (result.hasErrors()) {
+            // Collect all error messages and return them
+            String errorMessage = result.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(Map.of("message", errorMessage));
+        }
+
         return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
     }
 

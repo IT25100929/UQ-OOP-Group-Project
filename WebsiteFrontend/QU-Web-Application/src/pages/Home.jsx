@@ -121,11 +121,11 @@ function Home() {
                         </p>
 
                         {/* Professional Button Design */}
-                        <a href="#rooms"
+                        <Link to="/rooms"
                             className="btn btn-outline-light px-5 py-3 fw-bold text-uppercase"
                             style={{ borderRadius: '50px', letterSpacing: '2px', fontSize: '0.85rem', borderWidth: '2px' }}>
                             View Available Rooms
-                        </a>
+                        </Link>
                     </div>
 
                 </div>

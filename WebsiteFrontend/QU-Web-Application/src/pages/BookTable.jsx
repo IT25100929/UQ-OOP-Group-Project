@@ -9,6 +9,9 @@ function BookTable() {
     const [restaurant, setRestaurant] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // Get today's date in YYYY-MM-DD for the 'min' attribute
+    const today = new Date().toISOString().split('T')[0];
+
     const [formData, setFormData] = useState({
         date: '',
         time: '19:00',
@@ -18,7 +21,6 @@ function BookTable() {
         requests: ''
     });
 
-    // Fetch the specific restaurant details from your existing API
     useEffect(() => {
         const fetchRestaurant = async () => {
             try {
@@ -38,8 +40,39 @@ function BookTable() {
         setFormData({ ...formData, [name]: value });
     };
 
+    const validateForm = () => {
+        const { email, date, time } = formData;
+
+        // 1. Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        // 2. Date validation (Cannot be in the past)
+        if (date < today) {
+            alert("Reservation date cannot be in the past.");
+            return false;
+        }
+
+        // 3. Time validation (If today, check if time has already passed)
+        if (date === today) {
+            const currentTime = new Date().toTimeString().slice(0, 5); // "HH:MM"
+            if (time <= currentTime) {
+                alert("It's a bit late for that time today! Please select a future time slot.");
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
+
         try {
             const payload = {
                 ...formData,
@@ -48,11 +81,11 @@ function BookTable() {
             };
 
             await axios.post("http://localhost:8080/api/reservations", payload);
-
             alert(`Reservation confirmed at ${restaurant?.name}!`);
             navigate('/dining');
         } catch (err) {
-            alert("Failed to secure reservation. Please try again.");
+            const errorMsg = err.response?.data?.message || "Failed to secure reservation.";
+            alert(errorMsg);
             console.error(err);
         }
     };
@@ -72,21 +105,13 @@ function BookTable() {
             <div className="d-block d-lg-none" style={{ height: '80px' }}></div>
             <div className="row g-0 min-vh-100 mt-lg-4">
 
-                {/* Left Side: Visual & Info */}
                 <div className="col-lg-5 d-none d-lg-block position-relative">
                     <img
-                        /* Logic: If the restaurant data has loaded and has an imageUrl, 
-                           use that from your public folder. Otherwise, fall back to hotelImage1.
-                        */
-                        src={restaurant?.imageUrl
-                            ? `/assets/dining/${restaurant.imageUrl}`
-                            : hotelImage1
-                        }
+                        src={restaurant?.imageUrl ? `/assets/dining/${restaurant.imageUrl}` : hotelImage1}
                         alt={restaurant?.name || "Restaurant"}
                         className="w-100 h-100 position-absolute"
-                        style={{ objectFit: 'cover', opacity: 0.5 }} // Bumped opacity slightly for better visibility
+                        style={{ objectFit: 'cover', opacity: 0.5 }}
                     />
-                    {/* Added a subtle overlay to make the text pop even more */}
                     <div className="position-absolute top-0 start-0 w-100 h-100"
                         style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.7), transparent)' }}>
                     </div>
@@ -100,7 +125,6 @@ function BookTable() {
                     </div>
                 </div>
 
-                {/* Right Side: Booking Form */}
                 <div className="col-lg-7 d-flex align-items-center justify-content-center p-4 p-md-5">
                     <div style={{ maxWidth: '600px', width: '100%' }}>
                         <h2 className="mb-2 fw-bold text-uppercase" style={{ letterSpacing: '2px' }}>Reserve a Table</h2>
@@ -109,7 +133,15 @@ function BookTable() {
                         <form onSubmit={handleSubmit} className="row g-4">
                             <div className="col-md-6">
                                 <label className="form-label small text-uppercase fw-bold text-secondary">Date</label>
-                                <input type="date" name="date" required style={inputStyle} className="form-control custom-input" onChange={handleChange} />
+                                <input
+                                    type="date"
+                                    name="date"
+                                    required
+                                    min={today}
+                                    style={inputStyle}
+                                    className="form-control custom-input"
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className="col-md-6">
                                 <label className="form-label small text-uppercase fw-bold text-secondary">Time</label>

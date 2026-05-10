@@ -22,6 +22,12 @@ public class RestaurantService {
         return menuRepo.findAll();
     }
 
+    public void deleteMenuItem(Long id) {
+        if(menuRepo.existsById(id)) {
+            menuRepo.deleteById(id);
+        }
+    }
+
     public OrderDetails saveOrder(OrderDetails order) {
         order.setOrderDate(LocalDateTime.now());
         return orderRepo.save(order);

@@ -23,8 +23,42 @@ const Checkout = () => {
         setCustomer({ ...customer, [e.target.name]: e.target.value });
     };
 
+    const validateForm = () => {
+        const { email, phone, address, name } = customer;
+
+        // 1. Name check
+        if (name.trim().length < 2) {
+            alert("Please enter a valid name.");
+            return false;
+        }
+
+        // 2. Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        // 3. Phone validation (Standard 10-digit format)
+        const phoneRegex = /^(?:0|94|\+94)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/;
+        if (!phoneRegex.test(phone)) {
+            alert("Please enter a valid phone number (e.g., 0771234567).");
+            return false;
+        }
+
+        // 4. Address validation (Ensuring it's not just a few characters)
+        if (address.trim().length < 10) {
+            alert("Please provide a more detailed delivery address.");
+            return false;
+        }
+
+        return true;
+    };
+
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) return;
 
         const orderPayload = {
             customerName: customer.name,
@@ -32,12 +66,9 @@ const Checkout = () => {
             customerPhone: customer.phone,
             deliveryAddress: customer.address,
             specialInstructions: customer.notes,
-            items: cart.map(item => ({
-                menuItemId: item.id,
-                quantity: item.quantity,
-                priceAtOrder: item.price
-            })),
             totalAmount: total
+            // Note: If your backend OrderDetails model doesn't handle 'items' yet, 
+            // ensure your Model matches this payload or update the Model.
         };
 
         try {
@@ -49,7 +80,8 @@ const Checkout = () => {
             }
         } catch (error) {
             console.error("Order Submission Failed:", error);
-            alert("Failed to place order. Please check connection to backend.");
+            const serverMsg = error.response?.data?.message || "Failed to place order.";
+            alert(serverMsg);
         }
     };
 
@@ -69,17 +101,14 @@ const Checkout = () => {
     }
 
     return (
-        /* Increased paddingTop to 120px to prevent header overlap */
         <div style={{ backgroundColor: '#0a0a0a', minHeight: '100vh', color: 'white', paddingTop: '60px' }}>
             <div className="container pb-5 mt-5">
-                {/* Page Title */}
                 <div className="mb-5">
                     <h2 className="fw-bold text-success mb-1">Secure Checkout</h2>
                     <p className="text-secondary">Provide your details to complete the order at The Royal Palms</p>
                 </div>
 
                 <div className="row g-4">
-                    {/* LEFT COLUMN: Customer Form */}
                     <div className="col-lg-7">
                         <div className="card border-0 shadow-lg p-4" style={{ backgroundColor: '#161616', borderRadius: '15px' }}>
                             <h5 className="mb-4 text-white border-bottom border-secondary pb-3">Delivery Information</h5>
@@ -113,21 +142,13 @@ const Checkout = () => {
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: Order Summary */}
                     <div className="col-lg-5">
-                        {/* Adjusted 'top' to 140px so the sticky card doesn't hit the header when scrolling */}
                         <div className="card border-0 shadow-lg p-4 sticky-top" style={{ backgroundColor: '#161616', borderRadius: '15px', top: '140px' }}>
                             <h5 className="mb-4 text-success fw-bold">Order Summary</h5>
-
                             <div className="custom-scroll pe-2" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                                 {cart.map((item, index) => (
                                     <div key={index} className="d-flex align-items-center mb-3 bg-black p-2 rounded-3 border border-secondary border-opacity-25">
-                                        <img
-                                            src={`/assets/menu/${item.image}`}
-                                            alt={item.name}
-                                            className="rounded"
-                                            style={{ width: '55px', height: '55px', objectFit: 'cover' }}
-                                        />
+                                        <img src={`/assets/menu/${item.image}`} alt={item.name} className="rounded" style={{ width: '55px', height: '55px', objectFit: 'cover' }} />
                                         <div className="ms-3 flex-grow-1">
                                             <div className="d-flex justify-content-between">
                                                 <h6 className="mb-0 small fw-bold text-white">{item.name}</h6>
@@ -138,9 +159,7 @@ const Checkout = () => {
                                     </div>
                                 ))}
                             </div>
-
                             <hr className="border-secondary mt-4 mb-3" />
-
                             <div className="d-flex justify-content-between text-secondary mb-2 small">
                                 <span>Subtotal</span>
                                 <span>Rs. {subtotal.toLocaleString()}</span>
@@ -149,17 +168,9 @@ const Checkout = () => {
                                 <span>Delivery Fee</span>
                                 <span className="text-info">Rs. {deliveryFee.toLocaleString()}</span>
                             </div>
-
                             <div className="d-flex justify-content-between text-white fw-bold fs-4 mt-2">
                                 <span>Total Amount</span>
                                 <span className="text-success">Rs. {total.toLocaleString()}</span>
-                            </div>
-
-                            <div className="mt-4 p-3 bg-dark rounded-3 text-center border border-secondary border-opacity-10">
-                                <p className="small text-light mb-0">
-                                    <i className="bi bi-shield-check text-success me-2"></i>
-                                    Secure and Private Connection
-                                </p>
                             </div>
                         </div>
                     </div>

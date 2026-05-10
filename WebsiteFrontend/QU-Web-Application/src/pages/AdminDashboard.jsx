@@ -27,6 +27,11 @@ function AdminDashboard() {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/admin/users" className="nav-link text-white mb-2 p-3">
+                            <i className="bi bi-person-badge me-2"></i> Registered Users
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/admin/bookings" className="nav-link text-white mb-2 p-3">
                             <i className="bi bi-calendar-check me-2"></i> View Bookings
                         </Link>

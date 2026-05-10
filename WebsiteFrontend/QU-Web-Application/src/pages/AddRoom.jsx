@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function AddRoom() {
+    const [rooms, setRooms] = useState([]);
     const [room, setRoom] = useState({
         title: '',
         price: '',
@@ -12,38 +13,60 @@ function AddRoom() {
 
     const inputStyle = { backgroundColor: '#000', border: '1px solid #333', color: '#fff' };
 
+    // Fetch rooms from backend
+    const fetchRooms = async () => {
+        try {
+            const res = await axios.get("http://localhost:8080/api/rooms");
+            setRooms(res.data);
+        } catch (err) {
+            console.error("Error fetching rooms", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchRooms();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm("Are you sure you want to delete this room type?")) {
+            try {
+                await axios.delete(`http://localhost:8080/api/rooms/${id}`);
+                alert("Room deleted successfully!");
+                fetchRooms(); // Refresh the list
+            } catch (err) {
+                console.error("Error deleting room", err);
+                alert("Failed to delete room.");
+            }
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // 1. Clean the price string (remove '$' or commas if user typed them)
         const cleanPrice = room.price.replace(/[$,]/g, '');
 
-        // 2. Prepare the payload for Spring Boot
         const roomData = {
             title: room.title,
-            // Convert to a number (Double)
-            price: parseFloat(cleanPrice),
-            // Map 'desc' from state to 'description' for the Java Model
+            price: cleanPrice, // Adjusted to match your Room model (String price)
             description: room.desc,
             imageUrl: room.imageUrl,
-            // Convert comma string to Array for List<String> in Java
             amenities: room.amenities.split(',').map(item => item.trim())
         };
 
         try {
             await axios.post("http://localhost:8080/api/rooms", roomData);
             alert("Luxury Room added to The Royal Palms!");
-            // Reset form
             setRoom({ title: '', price: '', desc: '', imageUrl: '', amenities: '' });
+            fetchRooms(); // Refresh the list
         } catch (err) {
             console.error(err);
-            alert("Failed to save room. Check if the price is a valid number.");
+            alert("Failed to save room.");
         }
     };
 
     return (
         <div className="container py-5">
-            <div className="card bg-dark border-secondary p-4 mx-auto shadow-lg" style={{ maxWidth: '700px', backgroundColor: '#1e1e1e' }}>
+            {/* Form Section */}
+            <div className="card bg-dark border-secondary p-4 mx-auto shadow-lg mb-5" style={{ maxWidth: '700px', backgroundColor: '#1e1e1e' }}>
                 <h3 className="text-success fw-bold mb-4 text-uppercase" style={{ letterSpacing: '2px' }}>Add New Room Type</h3>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -54,7 +77,6 @@ function AddRoom() {
 
                     <div className="mb-3">
                         <label className="text-secondary small fw-bold">PRICE PER NIGHT</label>
-                        {/* Change type to number to help the user, or keep text and use the regex logic above */}
                         <input type="text" className="form-control shadow-none" style={inputStyle} placeholder="e.g. 500.00"
                             value={room.price} onChange={(e) => setRoom({ ...room, price: e.target.value })} required />
                     </div>
@@ -81,6 +103,38 @@ function AddRoom() {
                         Publish Room Type
                     </button>
                 </form>
+            </div>
+
+            {/* List Management Section */}
+            <div className="card bg-dark border-secondary p-4 mx-auto shadow-lg" style={{ backgroundColor: '#1e1e1e' }}>
+                <h3 className="text-success fw-bold mb-4 text-uppercase" style={{ letterSpacing: '2px' }}>Manage Existing Rooms</h3>
+                <div className="table-responsive">
+                    <table className="table table-dark table-hover align-middle">
+                        <thead className="text-secondary small fw-bold">
+                            <tr>
+                                <th>TITLE</th>
+                                <th>PRICE</th>
+                                <th className="text-end">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rooms.map((r) => (
+                                <tr key={r.id}>
+                                    <td>{r.title}</td>
+                                    <td className="text-success fw-bold">${r.price}</td>
+                                    <td className="text-end">
+                                        <button
+                                            onClick={() => handleDelete(r.id)}
+                                            className="btn btn-outline-danger btn-sm px-3"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

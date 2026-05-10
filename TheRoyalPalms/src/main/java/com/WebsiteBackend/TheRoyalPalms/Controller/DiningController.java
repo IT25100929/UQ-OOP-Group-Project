@@ -3,6 +3,7 @@ package com.WebsiteBackend.TheRoyalPalms.Controller;
 import com.WebsiteBackend.TheRoyalPalms.Model.Dining;
 import com.WebsiteBackend.TheRoyalPalms.Repository.DiningRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,5 +29,15 @@ public class DiningController {
     @GetMapping("/{id}")
     public Dining getDiningById(@PathVariable Long id) {
         return diningRepository.findById(id).orElse(null);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDiningOption(@PathVariable Long id) {
+        if (!diningRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        diningRepository.deleteById(id);
+        return ResponseEntity.ok("Dining venue deleted successfully");
     }
 }

@@ -2,6 +2,7 @@ package com.WebsiteBackend.TheRoyalPalms.Controller;
 
 import com.WebsiteBackend.TheRoyalPalms.Model.Staff;
 import com.WebsiteBackend.TheRoyalPalms.Repository.StaffRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class StaffController {
     }
 
     @PostMapping
-    public Staff addStaff(@RequestBody Staff staff) {
+    public Staff addStaff(@Valid @RequestBody Staff staff) {
         return staffRepository.save(staff);
     }
 

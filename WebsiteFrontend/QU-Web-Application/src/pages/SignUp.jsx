@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function SignUp() {
-    // 1. State for form data
     const [formData, setFormData] = useState({
         fullName: '',
         phoneNumber: '',
@@ -16,19 +15,53 @@ function SignUp() {
         return () => { document.body.style.backgroundColor = ""; };
     }, []);
 
-    // 2. Handle input changes
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // 3. Handle Form Submission
+    const validateForm = () => {
+        const { fullName, phoneNumber, email, password, confirmPassword } = formData;
+
+        // 1. Name Check
+        if (fullName.trim().length < 3) {
+            alert("Full name must be at least 3 characters long.");
+            return false;
+        }
+
+        // 2. Phone Number (Sri Lankan format)
+        const phoneRegex = /^(?:0|94|\+94)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|4|5|6|7|8)\d)\d{6}$/;
+        if (!phoneRegex.test(phoneNumber)) {
+            alert("Please enter a valid phone number (e.g., 0771234567).");
+            return false;
+        }
+
+        // 3. Email Check
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            alert("Please enter a valid email address.");
+            return false;
+        }
+
+        // 4. Password Strength (Min 8 chars, at least one number)
+        const passwordRegex = /^(?=.*[0-9]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            alert("Password must be at least 8 characters long and contain at least one number.");
+            return false;
+        }
+
+        // 5. Match Check
+        if (password !== confirmPassword) {
+            alert("Passwords do not match!");
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match!");
-            return;
-        }
+        if (!validateForm()) return;
 
         try {
             const response = await axios.post("http://localhost:8080/api/users/register", {
@@ -37,11 +70,11 @@ function SignUp() {
                 email: formData.email,
                 password: formData.password
             });
-            console.log("Success:", response.data);
             alert("Registration Successful!");
+            setFormData({ fullName: '', phoneNumber: '', email: '', password: '', confirmPassword: '' });
         } catch (error) {
-            console.error("Error signing up:", error);
-            alert("Registration failed.");
+            const serverMsg = error.response?.data?.message || "Registration failed.";
+            alert(serverMsg);
         }
     };
 
@@ -59,67 +92,27 @@ function SignUp() {
                     <form onSubmit={handleSubmit}>
                         <div className="mb-3">
                             <label className="form-label small fw-bold text-uppercase">Full Name</label>
-                            <input
-                                name="fullName"
-                                type="text"
-                                className="form-control shadow-none"
-                                style={inputStyle}
-                                placeholder="Enter"
-                                onChange={handleChange}
-                                required
-                            />
+                            <input name="fullName" type="text" className="form-control shadow-none" style={inputStyle} value={formData.fullName} placeholder="Enter Name" onChange={handleChange} required />
                         </div>
 
                         <div className="mb-3">
                             <label className="form-label small fw-bold text-uppercase">Phone Number</label>
-                            <input
-                                name="phoneNumber"
-                                type="tel"
-                                className="form-control shadow-none"
-                                style={inputStyle}
-                                placeholder="+94 000-0000"
-                                onChange={handleChange}
-                                required
-                            />
+                            <input name="phoneNumber" type="tel" className="form-control shadow-none" style={inputStyle} value={formData.phoneNumber} placeholder="07XXXXXXXX" onChange={handleChange} required />
                         </div>
 
                         <div className="mb-3">
                             <label className="form-label small fw-bold text-uppercase">Email Address</label>
-                            <input
-                                name="email"
-                                type="email"
-                                className="form-control shadow-none"
-                                style={inputStyle}
-                                placeholder="name@example.com"
-                                onChange={handleChange}
-                                required
-                            />
+                            <input name="email" type="email" className="form-control shadow-none" style={inputStyle} value={formData.email} placeholder="name@example.com" onChange={handleChange} required />
                         </div>
 
                         <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label small fw-bold text-uppercase">Password</label>
-                                <input
-                                    name="password"
-                                    type="password"
-                                    className="form-control shadow-none"
-                                    style={inputStyle}
-                                    placeholder="••••••••"
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <input name="password" type="password" className="form-control shadow-none" style={inputStyle} value={formData.password} placeholder="••••••••" onChange={handleChange} required />
                             </div>
                             <div className="col-md-6 mb-3">
                                 <label className="form-label small fw-bold text-uppercase">Confirm</label>
-                                <input
-                                    name="confirmPassword"
-                                    type="password"
-                                    className="form-control shadow-none"
-                                    style={inputStyle}
-                                    placeholder="••••••••"
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <input name="confirmPassword" type="password" className="form-control shadow-none" style={inputStyle} value={formData.confirmPassword} placeholder="••••••••" onChange={handleChange} required />
                             </div>
                         </div>
 
