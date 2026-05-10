@@ -12,6 +12,8 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String userEmail; // New field to track who is giving feedback
+
     private String category;
     private String rating;
 

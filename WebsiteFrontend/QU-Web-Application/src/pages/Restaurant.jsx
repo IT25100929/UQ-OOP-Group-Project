@@ -13,7 +13,7 @@ function Restaurant() {
     const [menuData, setMenuData] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Fetch menu from Spring Boot
+    // 1. Fetch menu from Spring Boot
     useEffect(() => {
         const fetchMenu = async () => {
             try {
@@ -28,7 +28,7 @@ function Restaurant() {
         fetchMenu();
     }, []);
 
-    // Cart persistence
+    // 2. Cart persistence
     useEffect(() => {
         const savedCart = JSON.parse(localStorage.getItem('restaurantCart')) || [];
         setCart(savedCart);
@@ -37,6 +37,16 @@ function Restaurant() {
     useEffect(() => {
         localStorage.setItem('restaurantCart', JSON.stringify(cart));
     }, [cart]);
+
+    // 3. Helper logic to group items by category
+    const groupedMenu = menuData.reduce((acc, item) => {
+        const category = item.category || "Other";
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(item);
+        return acc;
+    }, {});
 
     const addToOrder = (item) => {
         setCart(prevCart => {
@@ -67,7 +77,7 @@ function Restaurant() {
                 </Link>
             )}
 
-            {/* 1. Carousel Section */}
+            {/* --- CAROUSEL SECTION --- */}
             <div id="carouselExampleCaptions" className="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
                 <div className="carousel-indicators">
                     <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" className="active"></button>
@@ -105,7 +115,7 @@ function Restaurant() {
                 </button>
             </div>
 
-            {/* 2. Reservation Section */}
+            {/* --- RESERVATION SECTION --- */}
             <div className="py-5" style={{ backgroundColor: '#1a1a1a', borderBottom: '1px solid #333' }}>
                 <div className="container">
                     <div className="row align-items-center">
@@ -122,7 +132,7 @@ function Restaurant() {
                 </div>
             </div>
 
-            {/* 3. Menu Section */}
+            {/* --- MENU SECTION --- */}
             <div className="container py-5">
                 <div className="text-center mb-5">
                     <span className="badge rounded-pill bg-success mb-2 px-3 py-2 text-uppercase" style={{ letterSpacing: '1px' }}>
@@ -138,17 +148,30 @@ function Restaurant() {
                         <p className="mt-3">Loading Deliciousness...</p>
                     </div>
                 ) : (
-                    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        {menuData.map((food) => (
-                            <div className="col" key={food.id}>
-                                <MenuCard item={food} onAdd={() => addToOrder(food)} />
+                    Object.keys(groupedMenu).map((category) => (
+                        <div key={category} className="mb-5">
+                            {/* Dynamic Category Header */}
+                            <div className="d-flex align-items-center mb-4">
+                                <h3 className="text-success fw-bold mb-0 pe-3" style={{ textTransform: 'capitalize' }}>
+                                    {category}
+                                </h3>
+                                <div className="flex-grow-1" style={{ height: '1px', backgroundColor: 'rgba(25, 135, 84, 0.3)' }}></div>
                             </div>
-                        ))}
-                    </div>
+
+                            {/* Menu Cards Grid */}
+                            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                {groupedMenu[category].map((food) => (
+                                    <div className="col" key={food.id}>
+                                        <MenuCard item={food} onAdd={() => addToOrder(food)} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))
                 )}
             </div>
 
-            {/* Animations */}
+            {/* --- ANIMATIONS & UTILITY STYLES --- */}
             <style>
                 {`
                 .transition-hover { transition: all 0.3s ease; }
@@ -159,6 +182,9 @@ function Restaurant() {
                     40% {transform: translateY(-10px);}
                     60% {transform: translateY(-5px);}
                 }
+                
+                /* Ensure category sections have breathing room */
+                .mb-5 { margin-bottom: 3.5rem !important; }
                 `}
             </style>
         </div>
