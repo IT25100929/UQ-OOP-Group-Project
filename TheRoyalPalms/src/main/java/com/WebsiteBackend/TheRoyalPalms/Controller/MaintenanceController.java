@@ -24,4 +24,9 @@ public class MaintenanceController {
     public List<MaintenanceIssue> getAllIssues() {
         return maintenanceRepository.findAll();
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteIssue(@PathVariable Long id) {
+        maintenanceRepository.deleteById(id);
+    }
 }
