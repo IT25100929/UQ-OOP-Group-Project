@@ -1,6 +1,7 @@
 package com.WebsiteBackend.TheRoyalPalms.Controller;
 
 import com.WebsiteBackend.TheRoyalPalms.Model.MenuItem;
+import com.WebsiteBackend.TheRoyalPalms.Model.OrderDetails;
 import com.WebsiteBackend.TheRoyalPalms.Service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,32 @@ public class RestaurantController {
     @PostMapping("/menu")
     public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
         return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
+    }
+    @PostMapping("/orders")
+    public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderDetails order, BindingResult result) {
+        if (result.hasErrors()) {
+            // Collect all error messages and return them
+            String errorMessage = result.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(Map.of("message", errorMessage));
+        }
+
+        return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
+    }
+
+
+
+
+    @GetMapping("/orders")
+    public List<OrderDetails> getAllOrders() {
+        return service.getAllOrders();
+    }
+
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+        service.deleteOrder(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
