@@ -1,9 +1,7 @@
 package com.WebsiteBackend.TheRoyalPalms.Service;
 
 import com.WebsiteBackend.TheRoyalPalms.Model.MenuItem;
-import com.WebsiteBackend.TheRoyalPalms.Model.OrderDetails;
 import com.WebsiteBackend.TheRoyalPalms.Repository.MenuItemRepository;
-import com.WebsiteBackend.TheRoyalPalms.Repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,18 +26,6 @@ public class RestaurantService {
         }
     }
 
-    public OrderDetails saveOrder(OrderDetails order) {
-        order.setOrderDate(LocalDateTime.now());
-        return orderRepo.save(order);
-    }
-
-    public List<OrderDetails> getAllOrders() {
-        return orderRepo.findAll();
-    }
-
-    public void deleteOrder(Long id) {
-        orderRepo.deleteById(id);
-    }
 
     // Inside RestaurantService.java
 
