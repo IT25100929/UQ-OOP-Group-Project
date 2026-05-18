@@ -15,17 +15,17 @@ public class MaintenanceController {
     @Autowired
     private MaintenanceRepository maintenanceRepository;
 
-    @PostMapping
+    @PostMapping //issue is taken from the user
     public MaintenanceIssue reportIssue(@RequestBody MaintenanceIssue issue) {
         return maintenanceRepository.save(issue);
     }
 
-    @GetMapping
+    @GetMapping //getting the issue displayed in the dashboard
     public List<MaintenanceIssue> getAllIssues() {
         return maintenanceRepository.findAll();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") //after addressing the issue then the report is deleted from the dashboard
     public void deleteIssue(@PathVariable Long id) {
         maintenanceRepository.deleteById(id);
     }
