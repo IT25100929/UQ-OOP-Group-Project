@@ -69,7 +69,7 @@ function Maintenance() {
 
             {/* Form Section */}
             <div className="card bg-black border-secondary p-4 mb-5 shadow">
-                <h5 className="text-white mb-3">Log Maintenance Issue or Guest Request</h5>
+                <h5 className="text-white mb-3">Submit Maintenance Issue or Guest Requests</h5>
                 <form onSubmit={handleSubmit}>
                     <div className="row">
                         <div className="col-md-8 mb-3">
