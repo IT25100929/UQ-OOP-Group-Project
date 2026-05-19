@@ -43,4 +43,23 @@ public class RoomController {
             return ResponseEntity.ok().build();
         }).orElse(ResponseEntity.notFound().build());
     }
+    @PutMapping("/{id}/price")
+    public ResponseEntity<Room> updateRoomPrice(@PathVariable Long id, @RequestBody Room priceUpdateRequest) {
+        return roomRepository.findById(id).map(room -> {
+            // Server-side baseline validation
+            String cleanPrice = priceUpdateRequest.getPrice().replaceAll("[$,]", "").trim();
+            try {
+                double parsedPrice = Double.parseDouble(cleanPrice);
+                if (parsedPrice <= 0) {
+                    return ResponseEntity.badRequest().<Room>build();
+                }
+            } catch (NumberFormatException e) {
+                return ResponseEntity.badRequest().<Room>build();
+            }
+
+            room.setPrice(cleanPrice);
+            Room updatedRoom = roomRepository.save(room);
+            return ResponseEntity.ok(updatedRoom);
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

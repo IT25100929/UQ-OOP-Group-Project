@@ -11,6 +11,10 @@ function AddRoom() {
         amenities: ''
     });
 
+    // Tracking state for row editing
+    const [editingRoomId, setEditingRoomId] = useState(null);
+    const [editingPrice, setEditingPrice] = useState('');
+
     const inputStyle = { backgroundColor: '#000', border: '1px solid #333', color: '#fff' };
 
     // Fetch rooms from backend
@@ -40,9 +44,45 @@ function AddRoom() {
         }
     };
 
+    const startEditing = (id, currentPrice) => {
+        setEditingRoomId(id);
+        setEditingPrice(currentPrice);
+    };
+
+    const cancelEditing = () => {
+        setEditingRoomId(null);
+        setEditingPrice('');
+    };
+
+    const handleUpdatePrice = async (id) => {
+        const cleanPrice = editingPrice.replace(/[$,]/g, '').trim();
+        
+        // Validation check for updating price
+        if (!cleanPrice || isNaN(cleanPrice) || parseFloat(cleanPrice) <= 0) {
+            alert("Please enter a valid positive number for the updated price.");
+            return;
+        }
+
+        try {
+            await axios.put(`http://localhost:8080/api/rooms/${id}/price`, { price: cleanPrice });
+            alert("Price updated successfully!");
+            setEditingRoomId(null);
+            fetchRooms(); // Refresh list
+        } catch (err) {
+            console.error("Error updating price", err);
+            alert("Failed to update price.");
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const cleanPrice = room.price.replace(/[$,]/g, '');
+        const cleanPrice = room.price.replace(/[$,]/g, '').trim();
+
+        // Client-side Price Validation
+        if (!cleanPrice || isNaN(cleanPrice) || parseFloat(cleanPrice) <= 0) {
+            alert("Please enter a valid numeric amount for the price (e.g., 500 or 500.00).");
+            return;
+        }
 
         const roomData = {
             title: room.title,
@@ -121,8 +161,45 @@ function AddRoom() {
                             {rooms.map((r) => (
                                 <tr key={r.id}>
                                     <td>{r.title}</td>
-                                    <td className="text-success fw-bold">${r.price}</td>
+                                    <td>
+                                        {editingRoomId === r.id ? (
+                                            <div className="input-group input-group-sm" style={{ maxWidth: '150px' }}>
+                                                <span className="input-group-text bg-black border-secondary text-success">$</span>
+                                                <input 
+                                                    type="text" 
+                                                    className="form-control bg-black text-white border-secondary shadow-none"
+                                                    value={editingPrice}
+                                                    onChange={(e) => setEditingPrice(e.target.value)}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <span className="text-success fw-bold">${r.price}</span>
+                                        )}
+                                    </td>
                                     <td className="text-end">
+                                        {editingRoomId === r.id ? (
+                                            <>
+                                                <button
+                                                    onClick={() => handleUpdatePrice(r.id)}
+                                                    className="btn btn-success btn-sm px-3 me-2"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={cancelEditing}
+                                                    className="btn btn-outline-secondary btn-sm px-3 me-2"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                onClick={() => startEditing(r.id, r.price)}
+                                                className="btn btn-outline-warning btn-sm px-3 me-2"
+                                            >
+                                                Edit Price
+                                            </button>
+                                        )}
                                         <button
                                             onClick={() => handleDelete(r.id)}
                                             className="btn btn-outline-danger btn-sm px-3"
