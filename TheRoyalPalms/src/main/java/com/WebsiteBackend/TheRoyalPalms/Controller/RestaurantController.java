@@ -33,6 +33,11 @@ public class RestaurantController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @PostMapping("/menu")
+    public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
+        return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
+    }
     @PostMapping("/orders")
     public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderDetails order, BindingResult result) {
         if (result.hasErrors()) {
@@ -46,10 +51,8 @@ public class RestaurantController {
         return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
     }
 
-    @PostMapping("/menu")
-    public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
-        return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
-    }
+
+
 
     @GetMapping("/orders")
     public List<OrderDetails> getAllOrders() {
@@ -61,4 +64,5 @@ public class RestaurantController {
         service.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
+
 }

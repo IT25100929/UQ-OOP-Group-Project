@@ -28,6 +28,13 @@ public class RestaurantService {
         }
     }
 
+
+    // Inside RestaurantService.java
+
+    public MenuItem saveMenuItem(MenuItem item) {
+        return menuRepo.save(item);
+    }
+
     public OrderDetails saveOrder(OrderDetails order) {
         order.setOrderDate(LocalDateTime.now());
         return orderRepo.save(order);
@@ -41,9 +48,4 @@ public class RestaurantService {
         orderRepo.deleteById(id);
     }
 
-    // Inside RestaurantService.java
-
-    public MenuItem saveMenuItem(MenuItem item) {
-        return menuRepo.save(item);
-    }
 }
