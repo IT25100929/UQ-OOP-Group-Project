@@ -22,12 +22,12 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> signUp(@Valid @RequestBody User user, BindingResult result) {
-        // 1. Check for validation errors
+        // Check for validation errors
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(Map.of("message", result.getFieldError().getDefaultMessage()));
         }
 
-        // 2. Check if email exists
+        // Check if email exists
         if (userService.isEmailTaken(user.getEmail())) {
             return ResponseEntity.badRequest().body(Map.of("message", "Email is already registered."));
         }
