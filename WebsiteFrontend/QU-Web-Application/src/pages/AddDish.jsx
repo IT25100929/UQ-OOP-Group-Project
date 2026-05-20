@@ -27,9 +27,16 @@ function AddDish() {
         fetchMenu();
     }, []);
 
-    // 2. Handle adding new dish
+    // 2. Handle adding new dish (with Price Validation)
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Price validation check
+        if (parseFloat(dish.price) <= 0) {
+            alert("Price must be a valid positive number greater than zero.");
+            return;
+        }
+
         try {
             await axios.post("http://localhost:8080/api/menu", dish);
             alert("Dish added successfully!");
@@ -41,7 +48,37 @@ function AddDish() {
         }
     };
 
-    // 3. Handle deleting a dish
+    // 3. Handle updating a dish's price
+    const handleUpdatePrice = async (id, currentPrice) => {
+        const newPrice = window.prompt(`Enter new price (LKR) for this item:`, currentPrice);
+
+        // If user cancels the prompt, do nothing
+        if (newPrice === null) return;
+
+        const parsedPrice = parseFloat(newPrice);
+        if (isNaN(parsedPrice) || parsedPrice <= 0) {
+            alert("Please enter a valid positive price.");
+            return;
+        }
+
+        // Find the target item to keep its other properties intact
+        const itemToUpdate = menuItems.find(item => item.id === id);
+        if (!itemToUpdate) return;
+
+        try {
+            await axios.put(`http://localhost:8080/api/menu/${id}`, {
+                ...itemToUpdate,
+                price: parsedPrice
+            });
+            alert("Price updated successfully!");
+            fetchMenu(); // Refresh the list
+        } catch (err) {
+            console.error(err);
+            alert("Error updating price.");
+        }
+    };
+
+    // 4. Handle deleting a dish
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this item?")) {
             try {
@@ -69,8 +106,13 @@ function AddDish() {
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <label className="text-secondary small">Price (LKR)</label>
+                            {/* Added min and step attributes for native browser validation */}
                             <input type="number" className="form-control bg-black border-secondary text-white shadow-none"
-                                value={dish.price} onChange={(e) => setDish({ ...dish, price: e.target.value })} required />
+                                value={dish.price}
+                                onChange={(e) => setDish({ ...dish, price: e.target.value })}
+                                min="0.01"
+                                step="0.01"
+                                required />
                         </div>
                         <div className="col-md-6 mb-3">
                             <label className="text-secondary small">Category</label>
@@ -117,6 +159,13 @@ function AddDish() {
                                     <td><span className="badge bg-secondary">{item.category}</span></td>
                                     <td>Rs. {item.price}</td>
                                     <td className="text-end">
+                                        {/* Added Update Price button with Bootstrap warning styles */}
+                                        <button
+                                            className="btn btn-outline-warning btn-sm rounded-pill px-3 me-2"
+                                            onClick={() => handleUpdatePrice(item.id, item.price)}
+                                        >
+                                            Update Price
+                                        </button>
                                         <button
                                             className="btn btn-outline-danger btn-sm rounded-pill px-3"
                                             onClick={() => handleDelete(item.id)}
