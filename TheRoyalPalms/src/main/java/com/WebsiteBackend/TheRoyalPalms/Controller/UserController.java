@@ -35,14 +35,12 @@ public class UserController {
         return ResponseEntity.ok(userService.registerUser(user));
     }
 
-    // Inside UserController.java
 
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // Inside UserController.java
 
     @PutMapping("/{id}/role")
     public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestBody Map<String, String> payload) {

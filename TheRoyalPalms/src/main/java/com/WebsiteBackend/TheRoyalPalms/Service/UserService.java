@@ -29,13 +29,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // Inside UserService.java
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Inside UserService.java
+
 
     public void updateUserRole(Long id, String role) {
         User user = userRepository.findById(id)
