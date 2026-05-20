@@ -34,10 +34,30 @@ public class RestaurantController {
     }
 
 
+    // 1. Validated Add Menu Item Endpoint
     @PostMapping("/menu")
-    public ResponseEntity<MenuItem> addMenuItem(@RequestBody MenuItem item) {
+    public ResponseEntity<?> addMenuItem(@Valid @RequestBody MenuItem item, BindingResult result) {
+        if (result.hasErrors()) {
+            String errorMessage = result.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(Map.of("message", errorMessage));
+        }
         return new ResponseEntity<>(service.saveMenuItem(item), HttpStatus.CREATED);
     }
+
+    // 2. Validated Update Menu Item Endpoint
+    @PutMapping("/menu/{id}")
+    public ResponseEntity<?> updateMenuItem(@PathVariable Long id, @Valid @RequestBody MenuItem updatedItem, BindingResult result) {
+        if (result.hasErrors()) {
+            String errorMessage = result.getAllErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(Map.of("message", errorMessage));
+        }
+        return ResponseEntity.ok(service.updateMenuItem(id, updatedItem));
+    }
+
     @PostMapping("/orders")
     public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderDetails order, BindingResult result) {
         if (result.hasErrors()) {
