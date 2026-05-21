@@ -67,8 +67,7 @@ const Checkout = () => {
             deliveryAddress: customer.address,
             specialInstructions: customer.notes,
             totalAmount: total
-            // Note: If your backend OrderDetails model doesn't handle 'items' yet, 
-            // ensure your Model matches this payload or update the Model.
+
         };
 
         try {
