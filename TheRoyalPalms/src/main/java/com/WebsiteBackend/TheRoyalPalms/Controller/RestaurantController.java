@@ -68,21 +68,36 @@ public class RestaurantController {
             return ResponseEntity.badRequest().body(Map.of("message", errorMessage));
         }
 
-        return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(service.saveOrder(order), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to place order: " + e.getMessage()));
+        }
     }
 
 
 
 
     @GetMapping("/orders")
-    public List<OrderDetails> getAllOrders() {
-        return service.getAllOrders();
+    public ResponseEntity<?> getAllOrders() {
+        try {
+            return ResponseEntity.ok(service.getAllOrders());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to fetch orders: " + e.getMessage()));
+        }
     }
 
     @DeleteMapping("/orders/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
-        service.deleteOrder(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+        try {
+            service.deleteOrder(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Failed to delete order: " + e.getMessage()));
+        }
     }
 
 }
