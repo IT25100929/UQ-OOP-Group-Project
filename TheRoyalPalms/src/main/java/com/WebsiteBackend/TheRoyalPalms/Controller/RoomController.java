@@ -3,6 +3,7 @@ package com.WebsiteBackend.TheRoyalPalms.Controller;
 import com.WebsiteBackend.TheRoyalPalms.Model.Room;
 import com.WebsiteBackend.TheRoyalPalms.Repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,58 +20,87 @@ public class RoomController {
     private RoomRepository roomRepository;
 
     @PostMapping
-    public Room createRoom(@RequestBody Room room) {
-        return roomRepository.save(room);
+    public ResponseEntity<?> createRoom(@RequestBody Room room) {
+        try {
+            Room savedRoom = roomRepository.save(room);
+            return ResponseEntity.ok(savedRoom);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating room: " + e.getMessage());
+        }
     }
 
     @GetMapping
-    public List<Room> getAllRooms() {
-        List<Room> allRooms = roomRepository.findAll();
+    public ResponseEntity<?> getAllRooms() {
+        try {
+            List<Room> allRooms = roomRepository.findAll();
 
-        // Dynamic Numerical Sorting: Lowest price to Highest price
-        return allRooms.stream()
-                .sorted(Comparator.comparingDouble(room -> {
-                    try {
-                        // Safely strip any symbol styling ($ or commas) and parse as a number for sorting
-                        String cleanPrice = room.getPrice().replaceAll("[$,]", "").trim();
-                        return Double.parseDouble(cleanPrice);
-                    } catch (Exception e) {
-                        return 0.0; // Fallback for invalid formats
-                    }
-                }))
-                .collect(Collectors.toList());
+            List<Room> sortedRooms = allRooms.stream()
+                    .sorted(Comparator.comparingDouble(room -> {
+                        try {
+                            String cleanPrice = room.getPrice().replaceAll("[$,]", "").trim();
+                            return Double.parseDouble(cleanPrice);
+                        } catch (Exception e) {
+                            return 0.0;
+                        }
+                    }))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(sortedRooms);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching rooms: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
-    public Room getRoomById(@PathVariable Long id) {
-        return roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
+    public ResponseEntity<?> getRoomById(@PathVariable Long id) {
+        try {
+            Room room = roomRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
+            return ResponseEntity.ok(room);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching room: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRoom(@PathVariable Long id) {
-        return roomRepository.findById(id).map(room -> {
-            roomRepository.delete(room);
-            return ResponseEntity.ok().build();
-        }).orElse(ResponseEntity.notFound().build());
+        try {
+            return roomRepository.findById(id).map(room -> {
+                roomRepository.delete(room);
+                return ResponseEntity.ok().build();
+            }).orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting room: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}/price")
-    public ResponseEntity<Room> updateRoomPrice(@PathVariable Long id, @RequestBody Room priceUpdateRequest) {
-        return roomRepository.findById(id).map(room -> {
-            String cleanPrice = priceUpdateRequest.getPrice().replaceAll("[$,]", "").trim();
-            try {
-                double parsedPrice = Double.parseDouble(cleanPrice);
-                if (parsedPrice <= 0) {
+    public ResponseEntity<?> updateRoomPrice(@PathVariable Long id, @RequestBody Room priceUpdateRequest) {
+        try {
+            return roomRepository.findById(id).map(room -> {
+                String cleanPrice = priceUpdateRequest.getPrice().replaceAll("[$,]", "").trim();
+                try {
+                    double parsedPrice = Double.parseDouble(cleanPrice);
+                    if (parsedPrice <= 0) {
+                        return ResponseEntity.badRequest().<Room>build();
+                    }
+                } catch (NumberFormatException e) {
                     return ResponseEntity.badRequest().<Room>build();
                 }
-            } catch (NumberFormatException e) {
-                return ResponseEntity.badRequest().<Room>build();
-            }
 
-            room.setPrice(cleanPrice);
-            Room updatedRoom = roomRepository.save(room);
-            return ResponseEntity.ok(updatedRoom);
-        }).orElse(ResponseEntity.notFound().build());
+                room.setPrice(cleanPrice);
+                Room updatedRoom = roomRepository.save(room);
+                return ResponseEntity.ok(updatedRoom);
+            }).orElse(ResponseEntity.notFound().build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating room price: " + e.getMessage());
+        }
     }
 }
