@@ -18,26 +18,48 @@ public class DiningController {
 
     @GetMapping
     public List<Dining> getAllDiningOptions() {
-        return diningRepository.findAll();
+        try {
+            return diningRepository.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return List.of();
+        }
     }
 
     @PostMapping
     public Dining addDiningOption(@RequestBody Dining dining) {
-        return diningRepository.save(dining);
+        try {
+            return diningRepository.save(dining);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping("/{id}")
     public Dining getDiningById(@PathVariable Long id) {
-        return diningRepository.findById(id).orElse(null);
+        try {
+            return diningRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDiningOption(@PathVariable Long id) {
-        if (!diningRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
+        try {
+            if (!diningRepository.existsById(id)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            diningRepository.deleteById(id);
+            return ResponseEntity.ok("Dining venue deleted successfully");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                    .body("An error occurred while deleting the dining venue");
         }
-        diningRepository.deleteById(id);
-        return ResponseEntity.ok("Dining venue deleted successfully");
     }
 }
