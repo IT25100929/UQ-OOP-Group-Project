@@ -25,26 +25,49 @@ public class FeedbackController {
 
     @PostMapping
     public ResponseEntity<?> saveFeedback(@RequestBody Feedback feedback) {
-        // Check if user exists in the users table
-        if (!userRepository.existsByEmail(feedback.getUserEmail())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Only registered guests can provide feedback. Please sign up first!"));
-        }
+        try {
+            // Check if user exists in the users table
+            if (!userRepository.existsByEmail(feedback.getUserEmail())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("message",
+                                "Only registered guests can provide feedback. Please sign up first!"));
+            }
 
-        // Check the limit (limit to 3 feedbacks per email)
-        long feedbackCount = feedbackRepository.countByUserEmail(feedback.getUserEmail());
-        if (feedbackCount >= 3) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                    .body(Map.of("message", "You have already shared your thoughts 3 times. Thank you for your active participation!"));
-        }
+            // Check the limit (limit to 3 feedbacks per email)
+            long feedbackCount = feedbackRepository.countByUserEmail(feedback.getUserEmail());
+            if (feedbackCount >= 3) {
+                return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                        .body(Map.of("message",
+                                "You have already shared your thoughts 3 times. Thank you for your active participation!"));
+            }
 
-        // Save if both checks pass
-        return ResponseEntity.ok(feedbackRepository.save(feedback));
+            // Save if both checks pass
+            return ResponseEntity.ok(feedbackRepository.save(feedback));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "message", "An unexpected error occurred.",
+                            "error", e.getMessage()
+                    ));
+        }
     }
 
     @GetMapping
-    public List<Feedback> getAllFeedback() {
-        // Returns newest feedback first
-        return feedbackRepository.findAll(Sort.by(Sort.Direction.DESC, "submittedAt"));
+    public ResponseEntity<?> getAllFeedback() {
+        try {
+            // Returns newest feedback first
+            List<Feedback> feedbackList =
+                    feedbackRepository.findAll(Sort.by(Sort.Direction.DESC, "submittedAt"));
+
+            return ResponseEntity.ok(feedbackList);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "message", "Unable to retrieve feedback.",
+                            "error", e.getMessage()
+                    ));
+        }
     }
 }
