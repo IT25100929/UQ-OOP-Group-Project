@@ -18,16 +18,29 @@ public class StaffController {
 
     @GetMapping
     public List<Staff> getAllStaff() {
-        return staffRepository.findAll();
+        try {
+            return staffRepository.findAll();
+        } catch (Exception e) {
+            
+            throw new RuntimeException("Failed to fetch staff list", e);
+        }
     }
 
     @PostMapping
     public Staff addStaff(@Valid @RequestBody Staff staff) {
-        return staffRepository.save(staff);
+        try {
+            return staffRepository.save(staff);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save staff member", e);
+        }
     }
 
     @DeleteMapping("/{id}")
     public void deleteStaff(@PathVariable Long id) {
-        staffRepository.deleteById(id);
+        try {
+            staffRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete staff member with ID: " + id, e);
+        }
     }
 }
